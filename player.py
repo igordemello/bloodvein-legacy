@@ -1101,8 +1101,8 @@ class Player():
         elif trait == "Humano":
             self.base_rate = 0
             self.rate = 0
-            self.arma.dano -= 10
-            self.arma.lifeSteal /= 2
+            self.arma.dano -= 7
+            self.arma.lifeSteal /= 1.7
         elif trait == "Ancião":
             self.efeitos.append("lentidao")
         elif trait == "Peçonhento":
@@ -1120,7 +1120,7 @@ class Player():
             self.base_chanceCritico = self.arma.chanceCritico
             self.macarronada += 1
 
-        self.base_rate = 1
+        self.base_rate = 0.5
         self.base_rateSt = 1
         self.base_velocidadeMov = 0.5
         self.base_custoDash = 2.75

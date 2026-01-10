@@ -47,8 +47,8 @@ class MenuArmas:
         self.menu_ativo = False
 
         self.dificuldades = [
+            "Fácil",
             "Normal",
-            "Difícil",
             "Criança da Noite",
             "Lua de Sangue"
         ]
