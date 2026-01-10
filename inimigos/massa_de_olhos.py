@@ -7,7 +7,7 @@ from random import uniform, randint
 from utils import resource_path 
 
 class Massa(Inimigo):
-    def __init__(self, x, y, largura, altura, nome="Massa de Olhos", hp=100, velocidade=1.5, dano=10):
+    def __init__(self, x, y, largura, altura, nome="Massa de Olhos", hp=100, velocidade=1.5, dano=6):
         super().__init__(x, y, largura, altura, hp, velocidade, dano)
         self.spritesheet = image.load(resource_path('./assets/Enemies/Massa_De_Olhos-voando.png')).convert_alpha()
         self.nome = nome

@@ -4,41 +4,46 @@ class Dificuldade:
 
     def set_dificuldade(self, nivel):
         self.nivel = nivel
-        if nivel == 'normal':
-            self.mult_dano_jogador = 1.0
-            self.mult_dano_inimigo = 1.0
+        if nivel == 'fácil': #fácil e depois normal
+            self.mult_dano_jogador = 0.7 #dano NO jogador
+            self.mult_dano_inimigo = 1.4 #dano DO jogador
             self.levas = 1
-        elif nivel == 'dificil':
-            self.mult_dano_jogador = 1.5
-            self.mult_dano_inimigo = 0.5
+            print("facil")
+        elif nivel == 'normal':
+            self.mult_dano_jogador = 0.8
+            self.mult_dano_inimigo = 1.1
             self.levas = 1
+            print("normal")
         elif nivel == 'criança da noite':
-            self.mult_dano_jogador = 2.0
-            self.mult_dano_inimigo = 0.3
+            self.mult_dano_jogador = 1.5
+            self.mult_dano_inimigo = 0.7
             self.levas = 2
+            print("c")
         elif nivel == 'lua de sangue':
-            self.mult_dano_jogador = 3.0
-            self.mult_dano_inimigo = 0.1
+            self.mult_dano_jogador = 2.5
+            self.mult_dano_inimigo = 0.5
             self.levas = 3
+            print("l")
         else:
             self.mult_dano_jogador = 1.0
             self.mult_dano_inimigo = 1.0
             self.levas = 3
+            print("cuzinhomelado")
 
     def chance(self, raridade):
         raridade = raridade.lower()
         chances = {
-            'Normal': {
+            'Fácil': {
                 'comum': 85,  # Aumentado de 70
                 'incomum': 10,  # Reduzido de 20
                 'raro': 4,  # Reduzido de 7
                 'lendaria': 1  # Reduzido de 3
             },
-            'Difícil': {
-                'comum': 75,  # Aumentado de 60
-                'incomum': 15,  # Reduzido de 20
-                'raro': 7,  # Mantido igual
-                'lendaria': 3  # Reduzido de 13
+            'Normal': {
+                'comum': 85,  # Aumentado de 60
+                'incomum': 10,  # Reduzido de 20
+                'raro': 4,  # Mantido igual
+                'lendaria': 2  # Reduzido de 13
             },
             'Criança Da Noite': {
                 'comum': 65,  # Aumentado de 50
