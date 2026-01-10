@@ -99,7 +99,7 @@ class Game:
 
         self.imagem_fundo_pause = None
 
-        self.imagem_controles = image.load(resource_path('assets/tela_controles.png')).convert_alpha()
+        self.imagem_controles = image.load(resource_path('assets/tela_controles_VERSAO_DE_GENTE.png')).convert_alpha()
         self.imagem_creditos = image.load(resource_path('assets/tela_creditos.png')).convert_alpha()
 
     def resetar_jogo(self, com_nova_run=False):
