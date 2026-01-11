@@ -120,6 +120,30 @@ class Sala:
         self.visitada = False
         self.cutscene = None
 
+        self.portal_spritesheet = image.load(
+            resource_path('assets/TileSet/coisas/Portal_Animação.png')
+        ).convert_alpha()
+
+        self.portal_frames = []
+        frame_count = 4
+
+        sheet_width = self.portal_spritesheet.get_width()
+        sheet_height = self.portal_spritesheet.get_height()
+
+        frame_width = sheet_width // frame_count
+        frame_height = sheet_height
+
+        for i in range(frame_count):
+            frame = self.portal_spritesheet.subsurface(
+                Rect(i * frame_width, 0, frame_width, frame_height)
+            )
+            frame = transform.scale(frame, (128, 128))
+            self.portal_frames.append(frame)
+
+        self.portal_frame_idx = 0
+        self.portal_frame_delay = 150  # ms
+        self.portal_last_update = time.get_ticks()
+
         self.spawn_points = self.mapa.get_inimigospawn()
         if tipo == 'loja':
             self.max_leves = 0
@@ -313,11 +337,11 @@ class Sala:
         # tipos_disponiveis = ["furacao","caveiradefogo","morcegopadrao","orb","espectro","polvo", "esqueletogelo", "massa", "zombie","aranhalunar","esqueletogelo","ratodesangue", "aranhadosol","arqueiro", "vampirosol","magoelementar","esqueletopeconhento"]
         #tipos_disponiveis = ["furacao","caveiradefogo","morcegopadrao","orb","espectro","polvo", "esqueletogelo", "massa", "zombie","aranhalunar","esqueletogelo","ratodesangue", "aranhadosol","arqueiro", "vampirosol","magoelementar","esqueletopeconhento"]
 
-        geral = ["espectro", "morcegopadrao", "ratodesangue",  "polvo","aranhalunar"]
-        andar1 = ["zombie"]
+        geral = ["morcegopadrao", "ratodesangue","polvo","aranhalunar"]
+        andar1 = geral + ["orb", "esqueletogelo","espectro"]
         andar2 = geral + ["furacao", "arqueiro", "esqueletopeconhento"]
-        andar3 = geral + ["caveiradefogo","magoelementar", "aranhadosol"]
-        andar4 = geral + ["vampirosol","aranhadosol"]
+        andar3 = geral + ["caveiradefogo","magoelementar", "massa"]
+        andar4 = geral + ["vampirosol","aranhadosol","zombie"]
 
         andar_atual = self.gerenciador_andar.numero_andar
         if andar_atual == 1:
@@ -437,6 +461,10 @@ class Sala:
 
     def atualizar(self,dt,teclas, eventos):
 
+        agora = time.get_ticks()
+        if agora - self.portal_last_update >= self.portal_frame_delay:
+            self.portal_last_update = agora
+            self.portal_frame_idx = (self.portal_frame_idx + 1) % len(self.portal_frames)
 
         if self.cutscene and self.cutscene.ativa:
             self.cutscene.update(eventos)  # ou eventos se estiver usando eventos
@@ -874,7 +902,9 @@ class Sala:
         if self.gerenciador_andar.grafo.nodes[self.gerenciador_andar.sala_atual]["tipo"] == "boss" and self.porta_liberada and self.gerenciador_andar.numero_andar != 4:
             offset_x, offset_y = screen_shaker.offset
             pos_x, pos_y = 1500 + offset_x, 600 + offset_y
-            self.tela.blit(self.portal_img, (pos_x, pos_y))
+
+            portal_frame = self.portal_frames[self.portal_frame_idx]
+            self.tela.blit(portal_frame, (pos_x, pos_y))
 
 
         # # DEBUG: Desenhar grade e caminho

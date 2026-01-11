@@ -9,7 +9,7 @@ import random
 from utils import resource_path 
 
 class Furacao(Inimigo):
-    def __init__(self, x, y, largura, altura, hp, nome="Furacao",velocidade=3, dano=20):
+    def __init__(self, x, y, largura, altura, hp, nome="Furacao",velocidade=4, dano=25):
         super().__init__(x, y, largura, altura, hp, velocidade, dano)
         
         # Estados do inimigo

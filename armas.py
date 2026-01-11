@@ -234,6 +234,9 @@ class LaminaDaNoite(Arma):
     def ataquePrincipal(self, inimigo):
         dano_final = max(1,
                          self.dano * inimigo.modificadorDanoRecebido * dificuldade_global.mult_dano_inimigo * self.comboMult)  # Dano mínimo de 1
+        if inimigo.congelado == True:
+            inimigo.congelado = False
+            inimigo.velocidade /= 0.5
         if randint(1, 100) <= max(1, self.chanceCritico):  # Chance crítica mínima de 1%
             inimigo.tomar_dano(dano_final * self.danoCriticoMod, critico=True)
             inimigo.ultimo_dano_critico = True
@@ -244,6 +247,8 @@ class LaminaDaNoite(Arma):
             inimigo.ultimo_dano = dano_final
 
     def ataqueSecundario(self, inimigo, player):
+        dano_final = max(1,
+        self.dano * inimigo.modificadorDanoRecebido * dificuldade_global.mult_dano_inimigo * self.comboMult)  # Dano mínimo de 1
         current_time = time.get_ticks()
         custo = 50 * player.mpModificador
         if player.mp < custo:
@@ -254,9 +259,13 @@ class LaminaDaNoite(Arma):
         if player.mp <= 0:
             return
         else:
-            inimigo.congelado = True
             player.mp -= custo
-            player.last_dash_time = current_time
+            player.hp -= 15
+            inimigo.tomar_dano(dano_final*2)
+            inimigo.congelado = True
+            inimigo.velocidade *= 0.5
+
+
 
 
 class Chigatana(Arma):
