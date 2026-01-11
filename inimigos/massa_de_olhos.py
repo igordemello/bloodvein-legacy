@@ -7,7 +7,7 @@ from random import uniform, randint
 from utils import resource_path 
 
 class Massa(Inimigo):
-    def __init__(self, x, y, largura, altura, nome="Massa de Olhos", hp=100, velocidade=1.5, dano=6):
+    def __init__(self, x, y, largura, altura, nome="Massa de Olhos", hp=100, velocidade=1.5, dano=5):
         super().__init__(x, y, largura, altura, hp, velocidade, dano)
         self.spritesheet = image.load(resource_path('./assets/Enemies/Massa_De_Olhos-voando.png')).convert_alpha()
         self.nome = nome
@@ -59,6 +59,7 @@ class Massa(Inimigo):
             self.attack_frames.append(frame)
 
     def desenhar(self, tela, player_pos, offset=(0, 0)):
+        now = time.get_ticks()
         offset_x, offset_y = offset
         draw_x = self.x + offset_x
         draw_y = self.y + offset_y
@@ -165,16 +166,17 @@ class Massa(Inimigo):
         self.desenhar_dano(tela, offset)
 
         if hasattr(self, 'veneno_ativo') and self.veneno_ativo:
-            if now >= self.veneno_proximo_tick and self.veneno_ticks > 0:
-                self.hp -= self.veneno_dano_por_tick
-                self.veneno_ticks -= 1
-                self.veneno_proximo_tick = now + self.veneno_intervalo
+            if now:
+                if now >= self.veneno_proximo_tick and self.veneno_ticks > 0:
+                    self.hp -= self.veneno_dano_por_tick
+                    self.veneno_ticks -= 1
+                    self.veneno_proximo_tick = now + self.veneno_intervalo
 
-                # Inicia animação de hit como feedback visual (opcional)
-                self.anima_hit = True
-                self.time_last_hit_frame = now
-                self.ultimo_dano = self.veneno_dano_por_tick
-                self.ultimo_dano_tempo = time.get_ticks()
+                    # Inicia animação de hit como feedback visual (opcional)
+                    self.anima_hit = True
+                    self.time_last_hit_frame = now
+                    self.ultimo_dano = self.veneno_dano_por_tick
+                    self.ultimo_dano_tempo = time.get_ticks()
 
             if self.veneno_ticks <= 0:
                 self.veneno_ativo = False

@@ -58,6 +58,7 @@ class Orb(Inimigo):
             self.attack_frames.append(frame)
 
     def desenhar(self, tela, player_pos, offset=(0, 0)):
+        now = time.get_ticks()
         offset_x, offset_y = offset
         draw_x = self.x + offset_x
         draw_y = self.y + offset_y

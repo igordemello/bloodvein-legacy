@@ -314,7 +314,7 @@ class Sala:
         #tipos_disponiveis = ["furacao","caveiradefogo","morcegopadrao","orb","espectro","polvo", "esqueletogelo", "massa", "zombie","aranhalunar","esqueletogelo","ratodesangue", "aranhadosol","arqueiro", "vampirosol","magoelementar","esqueletopeconhento"]
 
         geral = ["espectro", "morcegopadrao", "ratodesangue",  "polvo","aranhalunar"]
-        andar1 = geral + ["orb", "esqueletogelo", "massa"]
+        andar1 = ["zombie"]
         andar2 = geral + ["furacao", "arqueiro", "esqueletopeconhento"]
         andar3 = geral + ["caveiradefogo","magoelementar", "aranhadosol"]
         andar4 = geral + ["vampirosol","aranhadosol"]

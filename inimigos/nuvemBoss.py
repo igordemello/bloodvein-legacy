@@ -6,7 +6,7 @@ from inimigo import Inimigo
 from utils import resource_path 
 
 class NuvemBoss(Inimigo):
-    def __init__(self, x, y, largura, altura, nome="Visão Carmesim", hp=5000, velocidade=4, dano=47):
+    def __init__(self, x, y, largura, altura, nome="Visão Carmesim", hp=5000, velocidade=4, dano=35):
         super().__init__(x, y, largura, altura, hp, velocidade, dano)
 
         self.nome = nome
