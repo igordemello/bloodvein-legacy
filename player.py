@@ -17,7 +17,7 @@ from som import musica
 from dificuldade import dificuldade_global
 
 class Player():
-    def __init__(self, x, y, largura, altura,hud=None, hp=100000, st=100, velocidadeMov=2, sprite=resource_path('assets/player/hero.png'), arma=None):
+    def __init__(self, x, y, largura, altura,hud=None, hp=100, st=100, velocidadeMov=2, sprite=resource_path('assets/player/hero.png'), arma=None):
         # animaçõesd
         self.hit_landed = None
         self.animacoes = {
