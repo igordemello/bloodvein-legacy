@@ -103,7 +103,7 @@ class Player():
         self.base_rate = 0
         self.base_rateSt = 1
         self.base_velocidadeMov = 0.5
-        self.base_custoDash = 0
+        self.base_custoDash = 100
         self.base_modificadorDanoRecebido = 1
         self.base_invencibilidade = 500
         self.base_cooldown_st = 3222.22
