@@ -341,7 +341,7 @@ class Sala:
         # tipos_disponiveis = ["furacao","caveiradefogo","morcegopadrao","orb","espectro","polvo", "esqueletogelo", "massa", "zombie","aranhalunar","esqueletogelo","ratodesangue", "aranhadosol","arqueiro", "vampirosol","magoelementar","esqueletopeconhento"]
         #tipos_disponiveis = ["furacao","caveiradefogo","morcegopadrao","orb","espectro","polvo", "esqueletogelo", "massa", "zombie","aranhalunar","esqueletogelo","ratodesangue", "aranhadosol","arqueiro", "vampirosol","magoelementar","esqueletopeconhento"]
 
-        geral = ["morcegopadrao", "ratodesangue","polvo","aranhalunar"]
+        geral = ["morcegopadrao", "polvo","aranhalunar"]
         andar1 = geral + ["orb", "esqueletogelo","espectro"]
         andar2 = geral + ["furacao", "arqueiro", "esqueletopeconhento"]
         andar3 = geral + ["caveiradefogo","magoelementar", "massa"]
@@ -761,9 +761,8 @@ class Sala:
                             hovering_color=cor,
                             value=arma
                         )
-
                         # Ajusta a posição do retângulo para centralizar a bola
-                        botao.rect = bola_img.get_rect(center=(pos[0], pos[1]))
+                        botao.rect = bola_img.get_rect(center=pos)
 
                         self.loots.append((botao, arma))
                         inimigo.loot_botao_criado = True
@@ -867,9 +866,16 @@ class Sala:
         # for collider in self.mapa.get_colliders():
         #     draw.rect(tela, (255,0,0), collider['rect'], 1)
         # draw.rect(tela, (0,255,0), self.player.player_rect, 2)
+
+        offset_x, offset_y = screen_shaker.offset
+
         for botao, arma in self.loots:
             # if len(self.loots) < 0:
             #     print("cucucucucu")
+            botao.rect.center = (
+                botao.world_pos[0] + offset_x,
+                botao.world_pos[1] + offset_y
+            )
             self.tela.blit(botao.image, botao.rect)
 
             mouse_pos = mouse.get_pos()
@@ -1051,7 +1057,14 @@ class Sala:
 
         frame = self.frames_alma[self.frame_alma_idx]
         frame = transform.scale(frame, (64, 64))
-        rect = frame.get_rect(center=pos)
+
+        pos_shake = (
+            pos[0] + screen_shaker.offset[0],
+            pos[1] + screen_shaker.offset[1]
+        )
+
+
+        rect = frame.get_rect(center=pos_shake)
         self.tela.blit(frame, rect)
 
     def desenha_pocao(self, pos, tipo):
@@ -1061,7 +1074,13 @@ class Sala:
             pocao_img = self.pocoesMp
 
         pocao_img = transform.scale(pocao_img, (32, 32))
-        rect = pocao_img.get_rect(center=pos)
+
+        pos_shake = (
+            pos[0] + screen_shaker.offset[0],
+            pos[1] + screen_shaker.offset[1]
+        )
+
+        rect = pocao_img.get_rect(center=pos_shake)
         self.tela.blit(pocao_img, rect)
 
     def fade(self, fade_in=True, duration=500):

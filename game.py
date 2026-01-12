@@ -555,8 +555,8 @@ class Game:
             # escuridão final
             self.screen.blit(self.darkness, (0, 0))
 
-            self.player.desenhar(self.screen, mouse_pos)
             self.sala_atual.desenhar_inimigos(self.screen)
+            self.player.desenhar(self.screen, mouse_pos)
             self.hud.desenhar()
             self.hud.update(self.clock.get_time())
             self.minimapa.draw()

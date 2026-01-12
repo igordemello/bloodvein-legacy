@@ -28,10 +28,9 @@ class Menu():
 
         self.botoes = [
             Botao(None, (600, 420), "Novo Jogo", self.fonte_botoes, self.cor_base, self.cor_hover, "jogo"),
-            Botao(None, (600, 520), "Continuar", self.fonte_botoes, self.cor_base, self.cor_hover, "continuar"),
-            Botao(None, (600, 620), "Créditos", self.fonte_botoes, self.cor_base, self.cor_hover, "creditos"),
-            Botao(None, (600, 720), "Controles", self.fonte_botoes, self.cor_base, self.cor_hover, "controles"),
-            Botao(None, (600, 820), "Sair", self.fonte_botoes, self.cor_base, self.cor_hover, "sair"),
+            Botao(None, (600, 520), "Créditos", self.fonte_botoes, self.cor_base, self.cor_hover, "creditos"),
+            Botao(None, (600, 620), "Controles", self.fonte_botoes, self.cor_base, self.cor_hover, "controles"),
+            Botao(None, (600, 720), "Sair", self.fonte_botoes, self.cor_base, self.cor_hover, "sair"),
         ]
 
         self.hover_escala = [Vector2(1.0, 0.0) for _ in self.botoes]
