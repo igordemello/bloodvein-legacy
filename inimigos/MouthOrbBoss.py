@@ -40,7 +40,7 @@ class MouthOrb(Inimigo):
         self.tempo_ultima_invocacao = 0
         self.invocando = False
         self.orbs_instanciados = []
-        self.max_orbs = 7
+        self.max_orbs = 6
 
 
     def carregar_frames(self, spritesheet, num_frames):

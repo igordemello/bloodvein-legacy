@@ -1096,13 +1096,13 @@ class Player():
         Translûcido - Não tem colisão com caixa (SFC)
         '''
         if trait == "Mercúrio":
-            self.velocidadeMov += 0.2
-            self.arma.dano -= 5
+            self.velocidadeMov += 0.08
+            self.arma.dano -= 6
         elif trait == "Humano":
             self.base_rate = 0
             self.rate = 0
-            self.arma.dano -= 7
-            self.arma.lifeSteal /= 1.7
+            self.arma.dano -= 6
+            self.arma.lifeSteal /= 1.6
         elif trait == "Ancião":
             self.efeitos.append("lentidao")
         elif trait == "Peçonhento":
@@ -1275,7 +1275,7 @@ class Player():
         if self.mp - custoHabilidade <= 0:
             return
         else:
-            self.criar_projetil(mouse_pos, dano=50, cor=None, sprite=sprite_projetil)
+            self.criar_projetil(mouse_pos, dano=20, cor=None, sprite=sprite_projetil)
             self.mp -= custoHabilidade
             self.last_dash_time = current_time
 
@@ -1298,7 +1298,7 @@ class Player():
         if hasattr(self, 'claraoAtivado') and self.claraoAtivado:
             return
 
-        self.claraoDano = 100
+        self.claraoDano = 70
         self.claraoAtivado = True
         self.travado = True
 
@@ -1351,7 +1351,7 @@ class Player():
         if self.mp - custoHabilidade <= 0:
             return
         else:
-            self.criar_projetil(mouse_pos, dano=80, cor=None, sprite=sprite_projetil)
+            self.criar_projetil(mouse_pos, dano=65, cor=None, sprite=sprite_projetil)
             self.mp -= custoHabilidade
             self.last_dash_time = current_time
 

@@ -7,7 +7,7 @@ from inimigos.orb import Orb
 from utils import resource_path 
 
 class MouthOrb2(Inimigo):
-    def __init__(self, x, y, largura, altura, nome="Vovó Orbe", hp=6500, velocidade=4, dano=65):
+    def __init__(self, x, y, largura, altura, nome="Vovó Orbe", hp=6500, velocidade=5, dano=65):
         super().__init__(x, y, largura, altura, hp, velocidade, dano)
 
         self.nome = nome
@@ -32,15 +32,15 @@ class MouthOrb2(Inimigo):
         self.tipo_colisao = 'voador'
 
         self.distancia_ataque = 100
-        self.cooldown_ataque = 2000
+        self.cooldown_ataque = 1500
         self.tempo_ultimo_ataque = 0
         self.executando_ataque = False
 
-        self.cooldown_invocacao = 3000
+        self.cooldown_invocacao = 2000
         self.tempo_ultima_invocacao = 0
         self.invocando = False
         self.orbs_instanciados = []
-        self.max_orbs = 5
+        self.max_orbs = 7
 
 
     def carregar_frames(self, spritesheet, num_frames):

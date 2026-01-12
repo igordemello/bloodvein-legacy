@@ -713,9 +713,9 @@ class Arco(Arma):
         self.raridadeStr = raridadeStr
         self.raridade = RARIDADES.get(self.raridadeStr, 1)
         # Base damage significantly reduced from 20 to 12
-        self.dano = max(1, 9 + randint(4 * self.raridade, 6 * self.raridade))
-        self.velocidade = max(0.2, 1.0)
-        self.cooldown = max(100, 400)
+        self.dano = max(1, 4 + randint(4 * self.raridade, 5 * self.raridade))
+        self.velocidade = max(0.2, 0.7)
+        self.cooldown = max(100, 300)
         self.range = (40, 90)
         self.radius = 90
         self.efeitos = None

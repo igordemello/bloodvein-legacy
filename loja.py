@@ -26,10 +26,10 @@ class Loja():
         self.itens_sorteados = [self.itensDisp.itens_por_id[id_] for id_ in self.ids_sorteados]
         
         self.precos = {
-            "comum": 15,
-            "rara": 30,
-            "lendaria": 45,
-            "ativo": 20
+            "comum": 10,
+            "rara": 20,
+            "lendaria": 30,
+            "ativo": 15
         }
         
         self.player = player

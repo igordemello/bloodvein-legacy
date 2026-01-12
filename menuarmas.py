@@ -52,7 +52,7 @@ class MenuArmas:
             "Criança da Noite",
             "Lua de Sangue"
         ]
-        self.dificuldade_selecionada = 0
+        self.dificuldade_selecionada = 1
 
         screen = display.get_surface()
         self.botao_iniciar = Botao(
