@@ -65,6 +65,8 @@ class Colisao:
 
                 self._colisao_entidade_entidade(ent1, ent2)
 
+        self._colisao_player_spawn_fumaca()
+
         for entidade in self.entidades:
             if entidade.tipo_colisao == 'voador':
                 self._colisao_entidade_mapa_sem_obstaculo(entidade)
@@ -388,4 +390,51 @@ class Colisao:
             # Remove trail segment se o timer acabou
             if trail_segment.get('timer', 0) <= 0:
                 self.player.trail_eletrico.remove(trail_segment)
+
+
+    def _colisao_player_spawn_fumaca(self):
+        from player import Player
+        from sala import Sala
+        
+        if not isinstance(self.player, Player):
+            return
+        
+        # Obtém a sala atual do player (você pode precisar passar a referência da sala)
+        sala_atual = self.player.sala_atual
+        
+        if not sala_atual:
+            return
+        
+        player_rect = self.player.get_hitbox()
+        
+        # Para cada partícula de fumaça
+        for particula in sala_atual.fumaça_particula[:]:
+            # Cria um retângulo para a partícula
+            particula_rect = Rect(
+                particula['x'] - particula['size'] // 2,
+                particula['y'] - particula['size'] // 2,
+                particula['size'],
+                particula['size']
+            )
+            
+            # Verifica colisão
+            if player_rect.colliderect(particula_rect):
+                # Calcula direção para empurrar o player para fora
+                dx = player_rect.centerx - particula_rect.centerx
+                dy = player_rect.centery - particula_rect.centery
+                
+                # Normaliza a direção
+                dist = math.hypot(dx, dy)
+                if dist > 0:
+                    dx /= dist
+                    dy /= dist
+                    
+                    # Empurra o player para fora
+                    push_distance = particula['size'] // 2 + player_rect.width // 2
+                    self.player.player_rect.x += dx * 5
+                    self.player.player_rect.y += dy * 5
+                    
+                    # Atualiza posição do player
+                    self.player.x, self.player.y = self.player.player_rect.topleft
+
 
