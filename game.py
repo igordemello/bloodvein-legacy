@@ -104,30 +104,6 @@ class Game:
         self.imagem_vitoria = image.load(resource_path('assets/fim-de-jogo.png')).convert_alpha()
         self.imagem_creditos = image.load(resource_path('assets/tela_creditos.png')).convert_alpha()
 
-        self.darkness = Surface((1920, 1080), SRCALPHA)
-        # self.darkness.fill((0, 0, 0, 220))
-
-        self.luz_player = self.criar_luz(500)
-
-        self.torch_manager = TorchManager()
-
-        self.torch_manager.add(
-            Torch(600, 240, self.criar_luz, inferior=False)
-        )
-
-        self.torch_manager.add(
-            Torch(1300, 240, self.criar_luz, inferior=False)
-        )
-
-        # tochas inferiores
-
-        self.torch_manager.add(
-            Torch(600, 800, self.criar_luz, inferior=True)
-        )
-
-        self.torch_manager.add(
-            Torch(1300, 800, self.criar_luz, inferior=True)
-        )
 
     def criar_luz(self, raio):
         luz = Surface((raio * 2, raio * 2), SRCALPHA)
@@ -184,6 +160,30 @@ class Game:
             }
         self.inventario = Inventario(self.screen, self.player, self.hud)
         self.menu_armas_ativo = com_nova_run
+        self.darkness = Surface((1920, 1080), SRCALPHA)
+        # self.darkness.fill((0, 0, 0, 220))
+
+        self.luz_player = self.criar_luz(500)
+
+        self.torch_manager = TorchManager()
+
+        self.torch_manager.add(
+            Torch(600, 240, self.criar_luz, self.andar, inferior=False)
+        )
+
+        self.torch_manager.add(
+            Torch(1300, 240, self.criar_luz, self.andar,inferior=False)
+        )
+
+        # tochas inferiores
+
+        self.torch_manager.add(
+            Torch(600, 800, self.criar_luz, self.andar,inferior=True)
+        )
+
+        self.torch_manager.add(
+            Torch(1300, 800, self.criar_luz, self.andar,inferior=True)
+        )
 
     def reiniciar_run_salva(self):
         if not self.dados_run_salvos:
