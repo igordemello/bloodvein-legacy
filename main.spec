@@ -15,7 +15,6 @@ def collect_data_folder_recursively(folder_name):
 
 datas = []
 datas += collect_data_folder_recursively("assets")
-datas += collect_data_folder_recursively("data")
 datas += collect_data_folder_recursively("mapas")
 datas += collect_data_folder_recursively("sons")
 datas += collect_data_folder_recursively("BloodVein SCORE")
@@ -51,5 +50,5 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=False  # Altere para True se quiser uma janela de terminal junto
+    console=False
 )

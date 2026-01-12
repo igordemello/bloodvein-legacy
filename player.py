@@ -103,7 +103,7 @@ class Player():
         self.base_rate = 0
         self.base_rateSt = 1
         self.base_velocidadeMov = 0.5
-        self.base_custoDash = 0
+        self.base_custoDash = 25
         self.base_modificadorDanoRecebido = 1
         self.base_invencibilidade = 500
         self.base_cooldown_st = 3222.22
@@ -291,6 +291,7 @@ class Player():
             self.is_dashing = True
             self.dash_direcao = direcao
             self.dash_duration = 0
+            self.stamina -= self.custoDash
 
         if self.is_dashing:
             if self.corrente_eletrica_ativa:
@@ -1127,7 +1128,7 @@ class Player():
         self.base_rate = 0.5
         self.base_rateSt = 1
         self.base_velocidadeMov = 0.5
-        self.base_custoDash = 2.75
+        self.base_custoDash = 25
         self.base_modificadorDanoRecebido = 1
         self.base_invencibilidade = 500
         self.base_cooldown_st = 3222.22
