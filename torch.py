@@ -38,15 +38,16 @@ class TorchParticle:
 class Torch:
     SPRITE = None
 
-    def __init__(self, x, y, criar_luz_func, inferior=False):
+    def __init__(self, x, y, criar_luz_func, andar, inferior=False):
         self.x = x
         self.y = y
         self.inferior = inferior
+        self.andar = andar
 
         if not inferior:
             if Torch.SPRITE is None:
                 original = pygame.image.load(
-                    resource_path("assets/TileSet/tocha1.png")
+                    resource_path(f"assets/TileSet/tocha{self.andar.numero_andar}.png")
                 ).convert_alpha()
 
                 Torch.SPRITE = pygame.transform.scale(
