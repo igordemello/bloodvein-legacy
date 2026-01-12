@@ -628,7 +628,7 @@ class EspadaEstelar(Arma):
         if player.mp <= 0:
             return
         else:
-            player.criar_projetil(mouse_pos, (max(1, self.dano / 3)), cor=(24, 212, 59))  # Reduzido de /2.5 para /3
+            player.criar_projetil(mouse_pos, (max(1, self.dano / 1.5)), cor=(24, 212, 59))  # Reduzido de /2.5 para /3
             player.mp -= custo
             player.last_dash_time = current_time
 
@@ -641,8 +641,8 @@ class MarteloSolar(Arma):
         self.raridade = RARIDADES.get(self.raridadeStr, 1)
         # Base damage reduced from 15 to 12
         self.dano = max(1, 12 + randint(10 * self.raridade, 15 * self.raridade))
-        self.velocidade = max(0.2, 0.4)  # Reduzida de 0.5 para 0.4 (arma mais lenta)
-        self.cooldown = max(100, 400)
+        self.velocidade = max(0.5, 0.7)  # Reduzida de 0.5 para 0.4 (arma mais lenta)
+        self.cooldown = max(100, 300)
         self.range = (52, 80)
         self.radius = 100
         self.efeitos = None

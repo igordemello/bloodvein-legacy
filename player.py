@@ -1097,7 +1097,7 @@ class Player():
         '''
         if trait == "Mercúrio":
             self.velocidadeMov += 0.08
-            self.arma.dano -= 6
+            self.arma.dano -= 7
         elif trait == "Humano":
             self.base_rate = 0
             self.rate = 0
@@ -1245,7 +1245,7 @@ class Player():
             return
         self.pocoesMp -= 1
         if "Estomago de Mana" not in self.habilidades:
-            self.mp += 30
+            self.mp += 35
             return
         else:
             self.mp = self.mpMaximo
@@ -1351,7 +1351,7 @@ class Player():
         if self.mp - custoHabilidade <= 0:
             return
         else:
-            self.criar_projetil(mouse_pos, dano=65, cor=None, sprite=sprite_projetil)
+            self.criar_projetil(mouse_pos, dano=55, cor=None, sprite=sprite_projetil)
             self.mp -= custoHabilidade
             self.last_dash_time = current_time
 
