@@ -44,6 +44,7 @@ from dificuldade import dificuldade_global
 from utils import resource_path
 import pygame
 
+
 def pixel_para_grid(x, y, offset, tile_size_scaled):
     """Converte coordenadas de pixel para grid, considerando offset e tamanho do tile escalado"""
     grid_x = int((x - offset[0]) / tile_size_scaled)
@@ -258,6 +259,9 @@ class Sala:
         self.save_manager.save_game(game_state, resource_path("save_file.json"))
 
         self.alagard = font.Font(resource_path('assets/fontes/alagard.ttf'), 25)
+
+        self.game_vitoria = False
+        self.vitoria_inicio = None
 
 
     def _criar_inimigos(self):
@@ -905,6 +909,20 @@ class Sala:
 
             portal_frame = self.portal_frames[self.portal_frame_idx]
             self.tela.blit(portal_frame, (pos_x, pos_y))
+
+        agora = time.get_ticks()  # milissegundos
+
+        if (
+            self.gerenciador_andar.grafo.nodes[self.gerenciador_andar.sala_atual]["tipo"] == "boss"
+            and self.porta_liberada
+            and self.gerenciador_andar.numero_andar == 4
+        ):
+            if self.vitoria_inicio is None:
+                self.vitoria_inicio = agora
+            elif agora - self.vitoria_inicio >= 3000:
+                self.game_vitoria = True
+        else:
+            self.vitoria_inicio = None
 
 
         # # DEBUG: Desenhar grade e caminho
