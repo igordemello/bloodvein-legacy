@@ -139,6 +139,21 @@ class MouthOrb(Inimigo):
                     self.vx = self.velocidade if player_x > self.x else -self.velocidade
                 if abs(player_y - self.y) > 200:
                     self.vy = self.velocidade if player_y > self.y else -self.velocidade
+    
+        if hasattr(self, 'veneno_ativo') and self.veneno_ativo:
+            if now >= self.veneno_proximo_tick and self.veneno_ticks > 0:
+                self.hp -= self.veneno_dano_por_tick
+                self.veneno_ticks -= 1
+                self.veneno_proximo_tick = now + self.veneno_intervalo
+
+                # Inicia animação de hit como feedback visual (opcional)
+                self.anima_hit = True
+                self.time_last_hit_frame = now
+                self.ultimo_dano = self.veneno_dano_por_tick
+                self.ultimo_dano_tempo = time.get_ticks()
+
+            if self.veneno_ticks <= 0:
+                self.veneno_ativo = False
 
         # Finalizar ataque/invocação após animação
         if self.estado == "ataque" and self.frame_index == 3: #3 se refere a quantidade de frames de ataque - 1
@@ -162,6 +177,7 @@ class MouthOrb(Inimigo):
         self.atualizar_animacao()
 
     def desenhar(self, tela, playerpos, offset=(0, 0)):
+        self.desenha_debuffs(tela)
         if not self.vivo or not self.frames:
             return
         
