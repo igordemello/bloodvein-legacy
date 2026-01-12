@@ -13,10 +13,9 @@ class Pause:
         cor_hover = (255, 190, 80)
 
         self.botaocontinuar = Botao(image=None, pos=(1920//2, 400), text_input="CONTINUAR", font=botao_font, base_color=cor_base, hovering_color=cor_hover)
-        self.botaoopcoes = Botao(image=None, pos=(1920//2, 500), text_input="OPÇÕES", font=botao_font, base_color=cor_base, hovering_color=cor_hover)
-        self.botaosair = Botao(image=None, pos=(1920//2, 600), text_input="SAIR", font=botao_font, base_color=cor_base, hovering_color=cor_hover)
+        self.botaosair = Botao(image=None, pos=(1920//2, 500), text_input="SAIR", font=botao_font, base_color=cor_base, hovering_color=cor_hover)
 
-        self.botoes = [self.botaocontinuar, self.botaoopcoes, self.botaosair]
+        self.botoes = [self.botaocontinuar,  self.botaosair]
 
         self.menu_ativo = False
 
@@ -56,8 +55,6 @@ class Pause:
                 musica.retomar()
                 self.menu_ativo = False
                 return "continuar"
-            if self.botaoopcoes.checkForInput(mouse_pos):
-                return "opcoes"
             if self.botaosair.checkForInput(mouse_pos):
                 return "sair"
             return None
