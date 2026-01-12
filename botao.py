@@ -4,6 +4,7 @@ class Botao():
 		self.image = image
 		self.x_pos = pos[0]
 		self.y_pos = pos[1]
+		self.world_pos = pos
 		self.font = font
 		self.base_color, self.hovering_color = base_color, hovering_color
 		self.text_input = text_input
