@@ -68,13 +68,13 @@ class MenuArmas:
         traits_atributos = {
             "Vampira": {"forca": 5, "destreza": 5, "agilidade": 5, "vigor": 5, "resistencia": 5, "estamina": 5,
                         "sorte": 5},
-            "Ancião": {"forca": 3, "destreza": 6, "agilidade": 7, "vigor": 4, "resistencia": 4, "estamina": 6,
+            "Ancião": {"forca": 6, "destreza": 6, "agilidade": 3, "vigor": 4, "resistencia": 4, "estamina": 4,
                             "sorte": 5},
             "Peçonhento": {"forca": 4, "destreza": 6, "agilidade": 5, "vigor": 6, "resistencia": 3, "estamina": 6,
                            "sorte": 4},
             "Mercúrio": {"forca": 4, "destreza": 7, "agilidade": 7, "vigor": 2, "resistencia": 4, "estamina": 6,
                          "sorte": 2},
-            "Humano": {"forca": 3, "destreza": 3, "agilidade": 4, "vigor": 3, "resistencia": 3, "estamina": 3,
+            "Humano": {"forca": 4, "destreza": 3, "agilidade": 4, "vigor": 3, "resistencia": 3, "estamina": 3,
                        "sorte": 8}
         }
         return traits_atributos[self.traits[self.trait_selecionada]]
@@ -175,10 +175,12 @@ class MenuArmas:
         scale = self.estado_hover.x * scale
         deslocamento_y = self.estado_hover.y
 
-        if is_hovered:
-            if not self.hud.stats_alpha:
-                self.hud.reset_stats_fade()
-            self.hud.mostraStatsArma(self.arma_atual)
+        #if is_hovered:
+            #if not self.hud.stats_alpha:
+                #self.hud.reset_stats_fade()
+            #self.get_atributos_por_trait()
+            #self.traits[self.trait_selecionada]
+            #self.hud.mostraStatsArma(self.arma_atual)
 
         width = int(carta_width * scale)
         height = int(carta_height * scale)
