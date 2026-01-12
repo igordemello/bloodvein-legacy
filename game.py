@@ -435,6 +435,9 @@ class Game:
                 if ev.type == MOUSEBUTTONDOWN and ev.button == 1:
                     resultado = self.menu_armas.checar_clique_menu(mouse_pos)
                     if resultado:
+                        if resultado == "sair":
+                            self.estado = EstadoDoJogo.MENU
+                            return 
                         arma, atributos, trait, dificuldade = resultado
                         self.player.arma = arma
                         self.player.atributos = atributos

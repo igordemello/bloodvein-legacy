@@ -46,7 +46,7 @@ class Torch:
         if not inferior:
             if Torch.SPRITE is None:
                 original = pygame.image.load(
-                    resource_path("assets/TileSet/tocha.png")
+                    resource_path("assets/TileSet/tocha1.png")
                 ).convert_alpha()
 
                 Torch.SPRITE = pygame.transform.scale(

@@ -36,6 +36,7 @@ class GerenciadorDeSom:
             "espada3": resource_path("sons/espada3.mp3"),
             "faca1": resource_path("sons/Faca1.mp3"),
             "faca2": resource_path("sons/Faca2.mp3"),
+            "secon_noite": resource_path("secon_noite.mp3"),
             "Inimigomorre": resource_path("sons/InimigoMorrendo.mp3"),
             "Inimigomorre2": resource_path("sons/InimigoMorrendo2.mp3"),
             "Martelo": resource_path("sons/Martelo.mp3"),

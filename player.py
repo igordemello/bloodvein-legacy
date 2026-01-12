@@ -1017,6 +1017,10 @@ class Player():
 
         if current_time - self.ultimo_ataque < cooldown:
             return
+
+        if self.arma.tipoDeArma == "Lamina da Noite":
+            som.tocar("secon_noite")
+
         if self.arma.secEhAtaque:
             if not self.arma.ehRanged:
                 self.ultimo_ataque = current_time
@@ -1097,7 +1101,7 @@ class Player():
         '''
         if trait == "Mercúrio":
             self.velocidadeMov += 0.08
-            self.arma.dano -= 7
+            self.arma.dano -= 5.5
         elif trait == "Humano":
             self.base_rate = 0
             self.rate = 0
