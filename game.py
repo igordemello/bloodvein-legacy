@@ -413,7 +413,6 @@ class Game:
                 self.cursor_clicando = False
 
     def atualizar(self, dt, keys, eventos):
-        print(self.estado)
         if self.sala_atual:
             if self.sala_atual.game_vitoria:
                 self.estado = EstadoDoJogo.VITORIA
