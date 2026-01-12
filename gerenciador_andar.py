@@ -138,7 +138,22 @@ class GerenciadorAndar:
         sala_bau = choice(sala_bau_candidatas)
         G.nodes[sala_bau]["tipo"] = "bau"
 
-        sala_loja_candidatas = [s for s in G.nodes if s != sala_inicio and s != sala_fim and s != sala_bau]
+        salas_segunda = list(G.neighbors(sala_inicio))
+
+        sala_loja_candidatas = [
+            s for s in G.nodes
+            if s != sala_inicio
+            and s != sala_fim
+            and s != sala_bau
+            and s not in salas_segunda
+        ]
+
+        if not sala_loja_candidatas:
+            sala_loja_candidatas = [
+                s for s in G.nodes
+                if s != sala_inicio and s != sala_fim and s != sala_bau
+            ]
+
         sala_loja = choice(sala_loja_candidatas)
         G.nodes[sala_loja]["tipo"] = "loja"
 

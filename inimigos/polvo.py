@@ -5,6 +5,7 @@ import math
 from inimigo import Inimigo
 from random import uniform, randint
 from utils import resource_path 
+from projectile_light import ProjectileLight
 
 class Polvo(Inimigo):
     def __init__(self, x, y, largura, altura, nome="Polvo", hp=100, velocidade=2.3, dano=10):
@@ -308,7 +309,13 @@ class Polvo(Inimigo):
             "raio_hitbox": 10,
             "cor": (204,169,221),  # Vermelho claro
             "tamanho": 10,
-            "trail": []  # Partículas de rastro
+            "trail": [],  # Partículas de rastro
+            "luz": ProjectileLight(
+                    color=(180, 30, 200),
+                    radius=70,
+                    intensity=255,
+                    steps=16
+                )
         }
         self.attack_animando = True
         self.attack_frame_index = 0

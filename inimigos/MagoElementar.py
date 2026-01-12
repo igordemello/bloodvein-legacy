@@ -3,7 +3,7 @@ import math
 import random
 from inimigo import Inimigo
 from utils import resource_path
-
+from projectile_light import ProjectileLight
 class MagoElementar(Inimigo):
     def __init__(self, x, y, largura=48, altura=48, hp=200, velocidade=2, dano=22):
         super().__init__(x, y, largura, altura, hp, velocidade, dano)
@@ -155,7 +155,13 @@ class MagoElementar(Inimigo):
             "congelar": True,
             "sprite": self.sprite_gelo,
             "lifetime": 999,
-            "raio_hitbox": 12
+            "raio_hitbox": 12,
+            "luz": ProjectileLight(
+                    color=(30, 30, 200),
+                    radius=70,
+                    intensity=255,
+                    steps=16
+                )
         })
 
     def atacar_fogo(self):
@@ -170,7 +176,13 @@ class MagoElementar(Inimigo):
                 "congelar": False,
                 "sprite": self.sprite_fogo,
                 "lifetime": 999,
-                "raio_hitbox": 12
+                "raio_hitbox": 12,
+                "luz": ProjectileLight(
+                    color=(255, 50, 50),
+                    radius=70,
+                    intensity=255,
+                    steps=16
+                )
             })
 
     def atualizar_projeteis(self):

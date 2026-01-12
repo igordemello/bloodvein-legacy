@@ -990,7 +990,7 @@ class Sala:
     def _trocar_de_sala(self):
         if self.em_transicao:
             return
-        self.fade(fade_in=False, duration=2000)
+        # self.fade(fade_in=False, duration=2000)
         som.tocar('passar_porta')
         for porta in self.ranges_doors:
             if self.player.get_hitbox().colliderect(porta['colisor']) and self.porta_liberada:
@@ -1038,7 +1038,7 @@ class Sala:
 
                         print(f"Transição para: {nova_sala} via {codigo_porta}")
                         self.em_transicao = False
-                        self.fade(fade_in=True, duration=2000)
+                        # self.fade(fade_in=True, duration=2000)
                         return
                 break
 

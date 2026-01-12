@@ -30,7 +30,7 @@ import shutil
 from som import GerenciadorDeMusica
 from som import musica
 from inventario import Inventario
-
+from torch import TorchManager, Torch
 from enum import Enum, auto
 from dificuldade import dificuldade_global
 from utils import resource_path
@@ -103,6 +103,64 @@ class Game:
         self.imagem_controles = image.load(resource_path('assets/tela_controles_VERSAO_DE_GENTE.png')).convert_alpha()
         self.imagem_vitoria = image.load(resource_path('assets/fim-de-jogo.png')).convert_alpha()
         self.imagem_creditos = image.load(resource_path('assets/tela_creditos.png')).convert_alpha()
+
+        self.darkness = Surface((1920, 1080), SRCALPHA)
+        # self.darkness.fill((0, 0, 0, 220))
+
+        self.luz_player = self.criar_luz(500)
+
+        self.torch_manager = TorchManager()
+
+        self.torch_manager.add(
+            Torch(600, 240, self.criar_luz, inferior=False)
+        )
+
+        self.torch_manager.add(
+            Torch(1300, 240, self.criar_luz, inferior=False)
+        )
+
+        # tochas inferiores
+
+        self.torch_manager.add(
+            Torch(600, 800, self.criar_luz, inferior=True)
+        )
+
+        self.torch_manager.add(
+            Torch(1300, 800, self.criar_luz, inferior=True)
+        )
+
+    def criar_luz(self, raio):
+        luz = Surface((raio * 2, raio * 2), SRCALPHA)
+
+        for r in range(raio, 0, -1):
+            alpha = int(200 * (1 - (r / raio)) ** 2)
+            draw.circle(
+                luz,
+                (0, 0, 0, alpha),
+                (raio, raio),
+                r
+            )
+
+        return luz
+    
+    def aplicar_luz(self):
+        # escurece tudo
+        self.darkness.fill((0, 0, 0, 125))
+
+        # centro do player
+        px, py = self.player.player_rect.center
+        raio = self.luz_player.get_width() // 2
+
+        # posição da luz
+        pos_luz = (px - raio, py - raio)
+
+        # remove a escuridão onde a luz passa
+        self.darkness.blit(
+            self.luz_player,
+            (px - raio, py - raio),
+            special_flags=BLEND_RGBA_SUB
+        )
+
 
     def resetar_jogo(self, com_nova_run=False):
         self.player = Player(950, 400, 32 * 2, 48 * 2)
@@ -428,6 +486,7 @@ class Game:
         if self.estado == EstadoDoJogo.JOGANDO:
             self.sala_atual.atualizar(dt, keys, eventos)
             self.player.atualizar(dt, keys)
+            self.torch_manager.update()
             mouse_buttons = mouse.get_pressed()
             mouse_pos = mouse.get_pos()
 
@@ -466,6 +525,33 @@ class Game:
         elif self.estado == EstadoDoJogo.JOGANDO:
             self.hud.desenhaFundo()
             self.sala_atual.desenhar(self.screen)
+        
+            # desenha tochas (sprite)
+            self.torch_manager.draw(self.screen, screen_shaker.offset)
+
+            # partículas da tocha (antes da luz)
+            self.torch_manager.draw_particles(self.screen, screen_shaker.offset)
+
+            # luz do player
+            self.aplicar_luz()
+
+            # luz das tochas
+            self.torch_manager.aplicar_luzes(self.darkness, screen_shaker.offset)
+
+            for inimigo in self.sala_atual.inimigos:
+                if hasattr(inimigo, "projeteis"):
+                    for projetil in inimigo.projeteis:
+                        if "luz" in projetil:
+                            projetil["luz"].apply(
+                                self.darkness,
+                                projetil["x"],
+                                projetil["y"],
+                                screen_shaker.offset
+                            )
+
+            # escuridão final
+            self.screen.blit(self.darkness, (0, 0))
+
             self.player.desenhar(self.screen, mouse_pos)
             self.sala_atual.desenhar_inimigos(self.screen)
             self.hud.desenhar()

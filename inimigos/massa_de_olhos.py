@@ -5,6 +5,7 @@ import math
 from inimigo import Inimigo
 from random import uniform, randint
 from utils import resource_path 
+from projectile_light import ProjectileLight
 
 class Massa(Inimigo):
     def __init__(self, x, y, largura, altura, nome="Massa de Olhos", hp=125, velocidade=1.5, dano=5.5):
@@ -221,7 +222,8 @@ class Massa(Inimigo):
                     "alpha": randint(150, 200),
                     "cor": (255, 100 + randint(0, 50), 100 + randint(0, 50)),
                     "tamanho": randint(10, 15),
-                    "lifetime": randint(200, 255)
+                    "lifetime": randint(200, 255),
+
                 })
 
             # Atualiza partículas existentes
@@ -336,7 +338,13 @@ class Massa(Inimigo):
             "raio_hitbox": 10,
             "cor": (135, 98, 73),  # Vermelho claro
             "tamanho": 7,
-            "trail": []  # Partículas de rastro
+            "trail": [],  # Partículas de rastro
+            "luz": ProjectileLight(
+                    color=(100, 50, 50),
+                    radius=70,
+                    intensity=255,
+                    steps=16
+                )
         }
         projetil2 = {
             "x": self.x + self.largura / 2 +15,
@@ -348,7 +356,13 @@ class Massa(Inimigo):
             "raio_hitbox": 10,
             "cor": (135, 98, 73),  # Vermelho claro
             "tamanho": 7,
-            "trail": []  # Partículas de rastro
+            "trail": [],  # Partículas de rastro
+            "luz": ProjectileLight(
+                    color=(100, 50, 50),
+                    radius=70,
+                    intensity=255,
+                    steps=16
+                )
         }
         projetil3 = {
             "x": self.x + self.largura / 2 -15,
@@ -360,7 +374,13 @@ class Massa(Inimigo):
             "raio_hitbox": 10,
             "cor": (135, 98, 73),  # Vermelho claro
             "tamanho": 7,
-            "trail": []  # Partículas de rastro
+            "trail": [],  # Partículas de rastro
+            "luz": ProjectileLight(
+                    color=(100, 50, 50),
+                    radius=70,
+                    intensity=255,
+                    steps=16
+                )
         }
         self.attack_animando = True
         self.attack_frame_index = 0

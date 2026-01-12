@@ -4,7 +4,7 @@ import random
 from pygame import time
 from inimigo import Inimigo
 from utils import resource_path 
-
+from projectile_light import ProjectileLight
 class NuvemBoss2(Inimigo):
     def __init__(self, x, y, largura, altura, nome="Visão Ácida", hp=8000, velocidade=4, dano=75):
         super().__init__(x, y, largura, altura, hp, velocidade, dano)
@@ -283,6 +283,12 @@ class NuvemBoss2(Inimigo):
             "dano": self.dano/2,
             "lifetime": 100,
             "tamanho": self.asset_orb_size,
-            "trail": []
+            "trail": [],
+            "luz": ProjectileLight(
+                    color=(30, 30, 200),
+                    radius=70,
+                    intensity=255,
+                    steps=16
+                )
         }
         self.projeteis.append(projetil)

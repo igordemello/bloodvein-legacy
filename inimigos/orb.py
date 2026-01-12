@@ -5,6 +5,7 @@ import math
 from inimigo import Inimigo
 from random import uniform, randint
 from utils import resource_path 
+from projectile_light import ProjectileLight
 
 class Orb(Inimigo):
     def __init__(self, x, y, largura, altura, nome="Orb", hp=100, velocidade=2, dano=25):
@@ -309,7 +310,13 @@ class Orb(Inimigo):
             "raio_hitbox": 10,
             "cor": (255, 100, 100),  # Vermelho claro
             "tamanho": 20,
-            "trail": []  # Partículas de rastro
+            "trail": [],  # Partículas de rastro
+            "luz": ProjectileLight(
+                    color=(255, 50, 50),
+                    radius=70,
+                    intensity=255,
+                    steps=16
+                )
         }
         self.attack_animando = True
         self.attack_frame_index = 0

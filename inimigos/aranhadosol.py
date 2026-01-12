@@ -3,6 +3,7 @@ import math
 import random
 from inimigo import Inimigo
 from utils import resource_path
+from projectile_light import ProjectileLight
 
 class AranhaDoSol(Inimigo):
     def __init__(self, x, y, largura=48, altura=48, hp=110, velocidade=2, dano=25):
@@ -126,7 +127,13 @@ class AranhaDoSol(Inimigo):
                 "lifetime": 80,
                 "cor": (255, 100, 0),
                 "tamanho": 20,  # Maior: antes era 16
-                "sprite": sprite_bola
+                "sprite": sprite_bola,
+                "luz": ProjectileLight(
+                    color=(255, 255, 0),
+                    radius=70,
+                    intensity=255,
+                    steps=16
+                )
             })
 
     def atualizar_projeteis(self):
