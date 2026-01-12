@@ -7,7 +7,7 @@ import os
 
 class GerenciadorAndar:
     def __init__(self):
-        self.numero_andar = 1
+        self.numero_andar = 3
         self.carregar_andar()
 
 

@@ -48,6 +48,7 @@ class EstadoDoJogo(Enum):
     CUTSCENE = auto()
     CONTROLES = auto()
     CREDITOS = auto()
+    VITORIA = auto()
 
 class Game:
     def __init__(self):
@@ -100,6 +101,7 @@ class Game:
         self.imagem_fundo_pause = None
 
         self.imagem_controles = image.load(resource_path('assets/tela_controles_VERSAO_DE_GENTE.png')).convert_alpha()
+        self.imagem_vitoria = image.load(resource_path('assets/fim-de-jogo.png')).convert_alpha()
         self.imagem_creditos = image.load(resource_path('assets/tela_creditos.png')).convert_alpha()
 
     def resetar_jogo(self, com_nova_run=False):
@@ -236,7 +238,7 @@ class Game:
                         except Exception as e:
                             print(f"Erro ao carregar jogo: {e}")
 
-                    elif escolha == "crecitos":
+                    elif escolha == "creditos":
                         self.estado = EstadoDoJogo.CREDITOS
                     elif escolha == "controles":
                         self.estado = EstadoDoJogo.CONTROLES
@@ -399,7 +401,7 @@ class Game:
                         self.estado = EstadoDoJogo.JOGANDO
                         self.foi_pra_jogo = time.get_ticks()
 
-        elif self.estado == EstadoDoJogo.CONTROLES or self.estado == EstadoDoJogo.CREDITOS:
+        elif self.estado == EstadoDoJogo.CONTROLES or self.estado == EstadoDoJogo.CREDITOS or self.estado == EstadoDoJogo.VITORIA:
             for ev in eventos:
                 if ev.type == KEYDOWN and ev.key == K_ESCAPE:
                     self.estado = EstadoDoJogo.MENU
@@ -411,6 +413,11 @@ class Game:
                 self.cursor_clicando = False
 
     def atualizar(self, dt, keys, eventos):
+        print(self.estado)
+        if self.sala_atual:
+            if self.sala_atual.game_vitoria:
+                self.estado = EstadoDoJogo.VITORIA
+                self.sala_atual.game_vitoria = False
         if self.sala_atual:
             if self.sala_atual.cutscene and self.sala_atual.cutscene.ativa:
                 self.estado = EstadoDoJogo.CUTSCENE
@@ -507,6 +514,9 @@ class Game:
 
         elif self.estado == EstadoDoJogo.CONTROLES:
             self.screen.blit(self.imagem_controles, (0, 0))
+
+        elif self.estado == EstadoDoJogo.VITORIA:
+            self.screen.blit(self.imagem_vitoria, (0, 0))
 
         elif self.estado == EstadoDoJogo.CREDITOS:
             self.screen.blit(self.imagem_creditos, (0, 0))
