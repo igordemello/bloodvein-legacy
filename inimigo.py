@@ -320,21 +320,32 @@ class Inimigo:
             except:
                 pass  # Caso a imagem não carregue, não faz nada
 
-    def detalhesElite(self,tela):
-        if not hasattr(self,"elite"):
+    def detalhesElite(self, tela):
+        if not hasattr(self, "elite"):
             return
-        self.tempo_mouseover = time.get_ticks()
+
         if not self.frames:
             return
+
+        # 🔒 CLAMP ABSOLUTO (OBRIGATÓRIO)
+        if self.frame_index < 0:
+            self.frame_index = 0
+        elif self.frame_index >= len(self.frames):
+            self.frame_index = len(self.frames) - 1
 
         sprite = self.frames[self.frame_index]
         mask = mask_from_surface(sprite)
 
         outline_size = 3
         outline_surf = Surface(
-            (sprite.get_width() + 2 * outline_size, sprite.get_height() + 2 * outline_size), SRCALPHA)
+            (sprite.get_width() + 2 * outline_size, sprite.get_height() + 2 * outline_size),
+            SRCALPHA
+        )
 
-        outline_mask = mask.to_surface(setcolor=(255, 200, 0, 20), unsetcolor=(0, 0, 0, 0))
+        outline_mask = mask.to_surface(
+            setcolor=(255, 200, 0, 20),
+            unsetcolor=(0, 0, 0, 0)
+        )
 
         for dx in range(-outline_size, outline_size + 1):
             for dy in range(-outline_size, outline_size + 1):

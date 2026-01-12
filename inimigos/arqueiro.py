@@ -5,7 +5,7 @@ from inimigo import Inimigo
 from utils import resource_path
 
 class Arqueiro(Inimigo):
-    def __init__(self, x, y, largura=48, altura=48, hp=80, velocidade=1.5, dano=15):
+    def __init__(self, x, y, largura=48, altura=48, hp=85, velocidade=1.5, dano=18):
         super().__init__(x, y, largura, altura, hp, velocidade, dano)
         self.nome = "Arqueiro"
         self.tipo_colisao = 'obstaculo'

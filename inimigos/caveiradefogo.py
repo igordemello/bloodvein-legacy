@@ -7,7 +7,7 @@ import random
 from utils import resource_path 
 
 class CaveiraDeFogo(Inimigo):
-    def __init__(self, x, y, largura, altura, hp, nome="Caveira de Fogo",velocidade=3, dano=20):
+    def __init__(self, x, y, largura, altura, hp = 110, nome="Caveira de Fogo",velocidade=3, dano=50):
         super().__init__(x, y, largura, altura, hp, velocidade, dano)
 
         self.spritesheet = image.load(resource_path('./assets/Enemies/FireSkull-Sheet.png')).convert_alpha()

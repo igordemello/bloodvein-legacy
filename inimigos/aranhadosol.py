@@ -5,7 +5,7 @@ from inimigo import Inimigo
 from utils import resource_path
 
 class AranhaDoSol(Inimigo):
-    def __init__(self, x, y, largura=48, altura=48, hp=100, velocidade=1.5, dano=10):
+    def __init__(self, x, y, largura=48, altura=48, hp=110, velocidade=2, dano=25):
         super().__init__(x, y, largura, altura, hp, velocidade, dano)
         self.nome = "Aranha do Sol"
         self.tipo_colisao = 'voador'

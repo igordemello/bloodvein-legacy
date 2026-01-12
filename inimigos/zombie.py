@@ -15,7 +15,7 @@ def grid_para_pixel(grid_x, grid_y, offset, tile_size_scaled):
     return x, y
 
 class Zombie(Inimigo):
-    def __init__(self, x, y, largura, altura, nome="Zombie", hp=150, velocidade=2.2, dano=8):
+    def __init__(self, x, y, largura, altura, nome="Zombie", hp=200, velocidade=2.2, dano=16):
         super().__init__(x, y, largura, altura, hp, velocidade, dano)
         self.nome = nome
 

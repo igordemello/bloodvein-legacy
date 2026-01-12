@@ -7,7 +7,7 @@ from inimigos.orb import Orb
 from utils import resource_path 
 
 class MouthOrb2(Inimigo):
-    def __init__(self, x, y, largura, altura, nome="Vovó Orbe", hp=6500, velocidade=4, dano=70):
+    def __init__(self, x, y, largura, altura, nome="Vovó Orbe", hp=6500, velocidade=4, dano=65):
         super().__init__(x, y, largura, altura, hp, velocidade, dano)
 
         self.nome = nome

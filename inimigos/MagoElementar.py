@@ -5,7 +5,7 @@ from inimigo import Inimigo
 from utils import resource_path
 
 class MagoElementar(Inimigo):
-    def __init__(self, x, y, largura=48, altura=48, hp=180, velocidade=1.5, dano=8):
+    def __init__(self, x, y, largura=48, altura=48, hp=200, velocidade=2, dano=22):
         super().__init__(x, y, largura, altura, hp, velocidade, dano)
         self.nome = "Mago Elementar"
         self.tipo_colisao = 'obstaculo'

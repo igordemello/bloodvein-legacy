@@ -14,7 +14,7 @@ def grid_para_pixel(grid_x, grid_y, offset, tile_size_scaled):
     return x, y
 
 class VampiroSol(Inimigo):
-    def __init__(self, x, y, largura=32, altura=32, nome="Vampiro Solar", hp=100, velocidade=2, dano=30):
+    def __init__(self, x, y, largura=32, altura=32, nome="Vampiro Solar", hp=130, velocidade=2.5, dano=45):
         super().__init__(x, y, largura, altura, hp, velocidade, dano)
         self.nome = nome
         self.tipo_colisao = 'obstaculo'
