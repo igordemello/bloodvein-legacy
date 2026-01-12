@@ -175,10 +175,12 @@ class MenuArmas:
         scale = self.estado_hover.x * scale
         deslocamento_y = self.estado_hover.y
 
-        if is_hovered:
-            if not self.hud.stats_alpha:
-                self.hud.reset_stats_fade()
-            self.hud.mostraStatsArma(self.arma_atual)
+        #if is_hovered:
+            #if not self.hud.stats_alpha:
+                #self.hud.reset_stats_fade()
+            #self.get_atributos_por_trait()
+            #self.traits[self.trait_selecionada]
+            #self.hud.mostraStatsArma(self.arma_atual)
 
         width = int(carta_width * scale)
         height = int(carta_height * scale)

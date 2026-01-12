@@ -36,6 +36,7 @@ class Inventario():
         self.visible = False
         self.player = player
         self.hud = hud
+        self.menuarmas = MenuArmas(self.hud)
         self.armasFundo = image.load(resource_path('assets/UI/armas_inventario.png')).convert_alpha()
         self.itensFundo = image.load(resource_path('assets/UI/itens_inventario.png')).convert_alpha()
         self.atributosFundo = image.load(resource_path('assets/UI/status_inventario.png')).convert_alpha()
@@ -475,14 +476,15 @@ class Inventario():
             fonte_attr = font.Font(resource_path('assets/fontes/alagard.ttf'), 32)
             cor_attr = (253, 246, 225)
 
+            arma_hover = self.menuarmas.arma_atual
             atributos = [
-                f"{arma_hover.tipoDeArma}",
-                f"Dano: {round(arma_hover.dano, 1)}",
-                f"Rapidez: {round(arma_hover.velocidade, 1)}",
-                f"Roubo de Vida: {round(arma_hover.lifeSteal, 1)}",
-                f"% Crítico: {round(arma_hover.chanceCritico, 1)}",
-                f"Dano Crítico: {round(arma_hover.danoCriticoMod * arma_hover.dano, 1)}",
-                f"Mod: {arma_hover.modificador.nome if hasattr(arma_hover, 'modificador') else 'Nenhum'}"
+                f"{self.menuarmas.arma_atual.tipoDeArma}",
+                f"Dano: {round(self.menuarmas.arma_atual.dano, 1)}",
+                f"Rapidez: {round(self.menuarmas.arma_atual.velocidade, 1)}",
+                f"Roubo de Vida: {round(self.menuarmas.arma_atual.lifeSteal, 1)}",
+                f"% Crítico: {round(self.menuarmas.arma_atual.chanceCritico, 1)}",
+                f"Dano Crítico: {round(self.menuarmas.arma_atual.danoCriticoMod * self.menuarmas.arma_atual.dano, 1)}",
+                f"Mod: {self.menuarmas.arma_atual.modificador.nome if hasattr(self.menuarmas.arma_atual, 'modificador') else 'Nenhum'}"
             ]
 
             base_x = 1250
