@@ -303,10 +303,25 @@ class Inventario():
 
             fonte_habilidade = font.Font(resource_path('assets/fontes/alagard.ttf'), 16)
             self.botoes_habilidades = []
-            explicacao = fonte_habilidade.render(
-                'Aperte 1,2,3 ou 4 com o cursor em cima de uma \n      habilidade para vincula-la a essa tecla', True,
-                (243, 236, 215))
-            self.screen.blit(explicacao, (800, 1020))
+            
+
+            linhas = (
+                "Aperte 1, 2, 3 ou 4 com o cursor em cima de uma\n"
+                "habilidade para vinculá-la a essa tecla"
+            ).split("\n")
+
+            surfaces = [fonte_habilidade.render(l, True, (243, 236, 215)) for l in linhas]
+
+            largura_max = max(s.get_width() for s in surfaces)
+
+            x = 800   # posição inicial do parágrafo
+            y = 1020
+
+            for surface in surfaces:
+                offset_x = (largura_max - surface.get_width()) // 2
+                self.screen.blit(surface, (x + offset_x, y))
+                y += surface.get_height()
+
             hovered_habilidade = None
 
             cadeado_img = None
