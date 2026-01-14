@@ -34,7 +34,7 @@ from torch import TorchManager, Torch
 from enum import Enum, auto
 from dificuldade import dificuldade_global
 from utils import resource_path
-
+from discord_rpc import DiscordRPC
 
 class EstadoDoJogo(Enum):
     MENU = auto()
@@ -103,6 +103,15 @@ class Game:
         self.imagem_controles = image.load(resource_path('assets/tela_controles_VERSAO_DE_GENTE.png')).convert_alpha()
         self.imagem_vitoria = image.load(resource_path('assets/fim-de-jogo.png')).convert_alpha()
         self.imagem_creditos = image.load(resource_path('assets/tela_creditos.png')).convert_alpha()
+
+        self.discord = DiscordRPC()
+        self.discord.conectar()
+        self.rpc_estado_atual = None
+        self.atualizar_rpc(
+            estado=f"No menu",
+            detalhes=f"Aguardando para iniciar",
+            imagem="logo"
+        )
 
 
     def criar_luz(self, raio):
@@ -255,6 +264,7 @@ class Game:
 
             for ev in eventos:
                 if ev.type == QUIT:
+                    self.discord.fechar()
                     quit()
                     sys.exit()
 
@@ -279,6 +289,11 @@ class Game:
                         som.tocar("Startar")
                         self.resetar_jogo(com_nova_run=True)
                         self.estado = EstadoDoJogo.ESCOLHA_ARMA
+                        self.atualizar_rpc(
+                            estado=f"Escolhendo classe",
+                            detalhes=f"Estudando os arquétipos",
+                            imagem="logo"
+                        )
                     elif escolha == "continuar":
                         som.tocar("click3")
                         try:
@@ -291,6 +306,11 @@ class Game:
                                                    self.set_minimapa)
                             self.sala_atual.load_save_data(dados['sala'], self.sala_atual.itensDisp)
                             self.estado = EstadoDoJogo.JOGANDO
+                            self.atualizar_rpc(
+                                estado=f"Explorando o castelo",
+                                detalhes=f"Andar {self.andar.numero_andar}",
+                                imagem="logo"
+                            )
                             self.player.atualizar_arma()
                             self.player.atualizar_atributos()
                         except Exception as e:
@@ -301,6 +321,7 @@ class Game:
                     elif escolha == "controles":
                         self.estado = EstadoDoJogo.CONTROLES
                     elif escolha == "sair":
+                        self.discord.fechar()
                         quit()
                         sys.exit()
 
@@ -339,6 +360,11 @@ class Game:
                     if ev.key == K_ESCAPE:
                         self.imagem_fundo_pause = self.screen.copy()
                         self.estado = EstadoDoJogo.PAUSADO
+                        self.atualizar_rpc(
+                            estado=f"Jogo pausado",
+                            detalhes=f"Planejando o próximo movimento",
+                            imagem="logo"
+                        )
                     elif ev.key == K_i:
                         self.inventario.toggle()
                         self.estado = EstadoDoJogo.INVENTARIO if self.inventario.visible else EstadoDoJogo.JOGANDO
@@ -362,6 +388,11 @@ class Game:
                     resultado = self.sala_atual.loja.checar_compra(mouse_pos, self.screen)
                     if resultado == "sair":
                         self.estado = EstadoDoJogo.JOGANDO
+                        self.atualizar_rpc(
+                            estado=f"Explorando o castelo",
+                            detalhes=f"Andar {self.andar.numero_andar}",
+                            imagem="logo"
+                        )
 
 
         elif self.estado == EstadoDoJogo.BAU:
@@ -371,6 +402,11 @@ class Game:
 
                     if resultado == "sair":
                         self.estado = EstadoDoJogo.JOGANDO
+                        self.atualizar_rpc(
+                            estado=f"Explorando o castelo",
+                            detalhes=f"Andar {self.andar.numero_andar}",
+                            imagem="logo"
+                        )
                         self.sala_atual.bau.menu_ativo = False
                         self.sala_atual.ativar_menu_bau = False
                         self.sala_atual.player.travado = False
@@ -379,6 +415,11 @@ class Game:
                         self.sala_atual.gerenciador_andar.grafo.nodes[self.sala_atual.gerenciador_andar.sala_atual][
                             "bau_aberto"] = True
                         self.estado = EstadoDoJogo.JOGANDO
+                        self.atualizar_rpc(
+                            estado=f"Explorando o castelo",
+                            detalhes=f"Andar {self.andar.numero_andar}",
+                            imagem="logo"
+                        )
                         self.sala_atual.bau.menu_ativo = False
                         self.sala_atual.ativar_menu_bau = False
                         self.sala_atual.player.travado = False
@@ -396,14 +437,29 @@ class Game:
                 print(f"Evento: {ev}")
                 if ev.type == KEYDOWN and ev.key == K_ESCAPE:
                     self.estado = EstadoDoJogo.JOGANDO
+                    self.atualizar_rpc(
+                        estado=f"Explorando o castelo",
+                        detalhes=f"Andar {self.andar.numero_andar}",
+                        imagem="logo"
+                    )
                 if ev.type == MOUSEBUTTONDOWN and ev.button == 1:
                     escolha = self.pause.checar_clique_pause(mouse_pos)
 
                     if escolha == "sair":
                         self.estado = EstadoDoJogo.MENU
+                        self.atualizar_rpc(
+                            estado=f"No menu",
+                            detalhes=f"Aguardando para iniciar",
+                            imagem="logo"
+                        )
                         self.pausado = False
                     elif escolha == "continuar":
                         self.estado = EstadoDoJogo.JOGANDO
+                        self.atualizar_rpc(
+                            estado=f"Explorando o castelo",
+                            detalhes=f"Andar {self.andar.numero_andar}",
+                            imagem="logo"
+                        )
                         self.pausado = False
 
         elif self.estado == EstadoDoJogo.INVENTARIO:
@@ -411,6 +467,11 @@ class Game:
                 if ev.type == KEYDOWN and ev.key == K_i:
                     self.inventario.toggle()
                     self.estado = EstadoDoJogo.JOGANDO
+                    self.atualizar_rpc(
+                        estado=f"Explorando o castelo",
+                        detalhes=f"Andar {self.andar.numero_andar}",
+                        imagem="logo"
+                    )
             self.inventario.checar_clique_armas(eventos)
             self.inventario.checar_clique_navegacao(eventos)
             self.inventario.checar_clique_inventario(eventos)
@@ -423,11 +484,26 @@ class Game:
                         self.apagar_saves()
                         self.resetar_jogo(com_nova_run=True)
                         self.estado = EstadoDoJogo.ESCOLHA_ARMA
+                        self.atualizar_rpc(
+                            estado=f"Escolhendo classe",
+                            detalhes=f"Estudando os arquétipos",
+                            imagem="logo"
+                        )
                     elif escolha == "reiniciar":
                         self.reiniciar_run_salva()
                         self.estado = EstadoDoJogo.JOGANDO
+                        self.atualizar_rpc(
+                            estado=f"Explorando o castelo",
+                            detalhes=f"Andar {self.andar.numero_andar}",
+                            imagem="logo"
+                        )
                     elif escolha == "sair":
                         self.estado = EstadoDoJogo.MENU
+                        self.atualizar_rpc(
+                            estado=f"No menu",
+                            detalhes=f"Aguardando para iniciar",
+                            imagem="logo"
+                        )
 
 
         elif self.estado == EstadoDoJogo.ESCOLHA_ARMA:
@@ -437,6 +513,11 @@ class Game:
                     if resultado:
                         if resultado == "sair":
                             self.estado = EstadoDoJogo.MENU
+                            self.atualizar_rpc(
+                                estado=f"No menu",
+                                detalhes=f"Aguardando para iniciar",
+                                imagem="logo"
+                            )
                             return 
                         arma, atributos, trait, dificuldade = resultado
                         self.player.arma = arma
@@ -460,12 +541,22 @@ class Game:
                         self.hud.atualizar_arma_icon()
                         som.tocar("clique3")
                         self.estado = EstadoDoJogo.JOGANDO
+                        self.atualizar_rpc(
+                            estado=f"Explorando o castelo",
+                            detalhes=f"Andar {self.andar.numero_andar}",
+                            imagem="logo"
+                        )
                         self.foi_pra_jogo = time.get_ticks()
 
         elif self.estado == EstadoDoJogo.CONTROLES or self.estado == EstadoDoJogo.CREDITOS or self.estado == EstadoDoJogo.VITORIA:
             for ev in eventos:
                 if ev.type == KEYDOWN and ev.key == K_ESCAPE:
                     self.estado = EstadoDoJogo.MENU
+                    self.atualizar_rpc(
+                        estado=f"No menu",
+                        detalhes=f"Aguardando para iniciar",
+                        imagem="logo"
+                    )
 
         for ev in eventos:
             if ev.type == MOUSEBUTTONDOWN:
@@ -477,6 +568,11 @@ class Game:
         if self.sala_atual:
             if self.sala_atual.game_vitoria:
                 self.estado = EstadoDoJogo.VITORIA
+                self.atualizar_rpc(
+                    estado=f"No menu",
+                    detalhes=f"Aguardando para iniciar",
+                    imagem="logo"
+                )
                 self.sala_atual.game_vitoria = False
         if self.sala_atual:
             if self.sala_atual.cutscene and self.sala_atual.cutscene.ativa:
@@ -485,6 +581,11 @@ class Game:
             self.sala_atual.cutscene.update(eventos)
             if not self.sala_atual.cutscene.ativa:
                 self.estado = EstadoDoJogo.JOGANDO
+                self.atualizar_rpc(
+                    estado=f"Explorando o castelo",
+                    detalhes=f"Andar {self.andar.numero_andar}",
+                    imagem="logo"
+                )
             return
         if self.estado == EstadoDoJogo.JOGANDO:
             self.sala_atual.atualizar(dt, keys, eventos)
@@ -511,6 +612,11 @@ class Game:
             if self.player.gameOver:
                 self.apagar_saves()
                 self.estado = EstadoDoJogo.GAME_OVER
+                self.atualizar_rpc(
+                    estado=f"No menu",
+                    detalhes=f"Aguardando para iniciar",
+                    imagem="logo"
+                )
 
     def desenhar(self, mouse_pos):
         self.screen.fill((0, 0, 0))
@@ -521,7 +627,6 @@ class Game:
             self.menu.desenho(self.screen)
 
         elif self.estado == EstadoDoJogo.ESCOLHA_ARMA:
-
             self.menu_armas.menu_ativo = True
             self.menu_armas.desenhar_menu(self.screen)
 
@@ -656,3 +761,9 @@ class Game:
             tela.blit(fade_surface, (0, 0))
             display.update()
             time.delay(30)
+
+    def atualizar_rpc(self, estado, detalhes, imagem="logo"):
+        novo_estado = (estado, detalhes, imagem)
+        if self.rpc_estado_atual != novo_estado:
+            self.discord.atualizar(estado, detalhes, imagem)
+            self.rpc_estado_atual = novo_estado
