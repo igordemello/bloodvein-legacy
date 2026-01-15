@@ -17,7 +17,11 @@ from som import musica
 from dificuldade import dificuldade_global
 
 class Player():
-    def __init__(self, x, y, largura, altura,hud=None, hp=100, st=100, velocidadeMov=2, sprite=resource_path('assets/player/hero.png'), arma=None):
+    def __init__(self, x, y, largura, altura, joystik, hud=None, hp=100, st=100, velocidadeMov=2, sprite=resource_path('assets/player/hero.png'), arma=None):
+        #joystick
+        self.joystick = joystik
+        self.deadzone = 0.25
+
         # animaçõesd
         self.hit_landed = None
         self.animacoes = {
@@ -351,22 +355,29 @@ class Player():
         speed = self.velocidadeMov * dt
         move_input = False
 
-        if teclas[K_a]:
-            self.vx -= speed
-            self.anim_direcao = "esquerda"
+        # ===== TECLADO =====
+        dx = dy = 0
+        if teclas[K_a]: dx -= 1
+        if teclas[K_d]: dx += 1
+        if teclas[K_w]: dy -= 1
+        if teclas[K_s]: dy += 1
+
+        # ===== CONTROLE (analógico esquerdo) =====
+        dx += self.eixo(0)   # eixo X
+        dy += self.eixo(1)   # eixo Y
+
+        if dx != 0 or dy != 0:
             move_input = True
-        if teclas[K_d]:
-            self.vx += speed
-            self.anim_direcao = "direita"
-            move_input = True
-        if teclas[K_w]:
-            self.vy -= speed
-            self.anim_direcao = "cima"
-            move_input = True
-        if teclas[K_s]:
-            self.vy += speed
-            self.anim_direcao = "baixo"
-            move_input = True
+
+        # aplica movimento
+        self.vx += dx * speed
+        self.vy += dy * speed
+
+        # direção da animação (prioridade eixo maior)
+        if abs(dx) > abs(dy):
+            self.anim_direcao = "direita" if dx > 0 else "esquerda"
+        elif dy != 0:
+            self.anim_direcao = "baixo" if dy > 0 else "cima"
 
         self.vx *= self.atrito
         self.vy *= self.atrito
@@ -383,14 +394,28 @@ class Player():
         self.vx = max(-max_vel, min(self.vx, max_vel))
         self.vy = max(-max_vel, min(self.vy, max_vel))
 
-        if teclas[K_d]:
-            self._dash(dt, teclas, 'd')
-        elif teclas[K_a]:
-            self._dash(dt, teclas, 'a')
-        elif teclas[K_w]:
-            self._dash(dt, teclas, 'w')
-        elif teclas[K_s]:
-            self._dash(dt, teclas, 's')
+        dash_x = dash_y = 0
+
+        if teclas[K_d]: dash_x = 1
+        elif teclas[K_a]: dash_x = -1
+        elif teclas[K_w]: dash_y = -1
+        elif teclas[K_s]: dash_y = 1
+
+        # controle (analógico)
+        if dash_x == 0 and dash_y == 0:
+            dash_x = self.eixo(0)
+            dash_y = self.eixo(1)
+
+        if abs(dash_x) > abs(dash_y):
+            if dash_x > 0:
+                self._dash(dt, teclas, 'd')
+            elif dash_x < 0:
+                self._dash(dt, teclas, 'a')
+        elif dash_y != 0:
+            if dash_y > 0:
+                self._dash(dt, teclas, 's')
+            elif dash_y < 0:
+                self._dash(dt, teclas, 'w')
 
         if self.is_dashing:
             if self.som_dash == True:
@@ -1500,3 +1525,9 @@ class Player():
             'rect': segment,
             'timer': 4000  # 4 segundos de duração
         })
+
+    def eixo(self, axis):
+        if not self.joystick:
+            return 0
+        v = self.joystick.get_axis(axis)
+        return 0 if abs(v) < self.deadzone else v

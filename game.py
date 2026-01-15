@@ -35,6 +35,7 @@ from enum import Enum, auto
 from dificuldade import dificuldade_global
 from utils import resource_path
 from discord_rpc import DiscordRPC
+from input_manager import InputManager
 
 class EstadoDoJogo(Enum):
     MENU = auto()
@@ -53,6 +54,16 @@ class EstadoDoJogo(Enum):
 class Game:
     def __init__(self):
         init()
+        joystick.init()
+
+        if joystick.get_count() > 0:
+            self.joystick = joystick.Joystick(0)
+            self.joystick.init()
+        else:
+            self.joystick = None
+
+        self.input = InputManager(self.joystick)
+
         self.clock = time.Clock()
         self.screen = display.set_mode((1920, 1080), vsync=1, flags=HWSURFACE | DOUBLEBUF)
         display.set_caption("Blood Vein")
@@ -148,7 +159,7 @@ class Game:
 
 
     def resetar_jogo(self, com_nova_run=False):
-        self.player = Player(950, 400, 32 * 2, 48 * 2)
+        self.player = Player(950, 400, 32 * 2, 48 * 2, self.joystick)
         self.hud = Hud(self.player, self.screen)
         self.player.set_hud(self.hud)
         self.andar = GerenciadorAndar()
