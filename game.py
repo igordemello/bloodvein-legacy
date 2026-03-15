@@ -37,6 +37,9 @@ from utils import resource_path
 from discord_rpc import DiscordRPC
 from input_manager import InputManager
 
+BASE_W = 1920
+BASE_H = 1080
+
 class EstadoDoJogo(Enum):
     MENU = auto()
     JOGANDO = auto()
@@ -65,7 +68,20 @@ class Game:
         self.input = InputManager(self.joystick)
 
         self.clock = time.Clock()
-        self.screen = display.set_mode((1920, 1080), vsync=1, flags=HWSURFACE | DOUBLEBUF)
+
+        # resolucoes = [
+        #     (800, 600),  #0
+        #     (1024, 768), #1
+        #     (1280, 720), #2
+        #     (1920, 1080) #3
+        # ]
+
+        # indice = 2
+
+        # largura, altura = resolucoes[indice]
+
+        self.screen = display.set_mode((1920,1080),flags=SCALED | FULLSCREEN | DOUBLEBUF,vsync=1)
+
         display.set_caption("Blood Vein")
         mouse.set_visible(False)
         logo = image.load(resource_path('assets/logo.png'))
