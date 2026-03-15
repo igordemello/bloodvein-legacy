@@ -70,7 +70,7 @@ class GameOver:
         self.fundo_gameover = image.load(resource_path('assets/ui/gameover.png')).convert_alpha()
         self.fundo_gameover = transform.scale(self.fundo_gameover, (1920, 1080))  # Redimensiona se necessário
 
-    def gameOverFuncionamento(self, tela):
+    def gameOverFuncionamento(self, tela, mouse_pos):
         self.menu_ativo = True
 
         # Atualiza a opacidade gradualmente
@@ -89,7 +89,6 @@ class GameOver:
         tela.blit(pause_text, text_rect)
 
         # Hover e update dos botões
-        mouse_pos = mouse.get_pos()
         for botao in self.botoes:
             botao.changeColor(mouse_pos)
             botao.update(tela)

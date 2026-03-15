@@ -69,18 +69,39 @@ class Game:
 
         self.clock = time.Clock()
 
-        # resolucoes = [
-        #     (800, 600),  #0
-        #     (1024, 768), #1
-        #     (1280, 720), #2
-        #     (1920, 1080) #3
-        # ]
+        resolucoes = [
+            (800, 600),  #0
+            (1024, 768), #1
+            (1280, 720), #2
+            (1920, 1080) #3
+        ]
 
-        # indice = 2
+        indice = 2
 
-        # largura, altura = resolucoes[indice]
+        self.largura, self.altura = resolucoes[indice]
 
-        self.screen = display.set_mode((1920,1080),flags=SCALED | FULLSCREEN | DOUBLEBUF,vsync=1)
+        modo = "janela"  
+        # "janela"
+        # "fullscreen"
+
+        flags = DOUBLEBUF
+
+        if modo == "fullscreen":
+            flags |= FULLSCREEN | HWSURFACE
+
+
+        self.window = display.set_mode(
+            (self.largura, self.altura),
+            flags=flags,
+            vsync=1
+        )
+
+        self.render_surface = Surface((BASE_W, BASE_H))
+
+        self.screen = self.render_surface
+
+        self.scale_x = self.largura / BASE_W
+        self.scale_y = self.altura / BASE_H
 
         display.set_caption("Blood Vein")
         mouse.set_visible(False)
@@ -286,7 +307,12 @@ class Game:
         while True:
             dt = self.clock.tick(60)
             eventos = event.get()
-            mouse_pos = mouse.get_pos()
+            mx, my = mouse.get_pos()
+            mouse_pos = (
+                int(mx / self.scale_x),
+                int(my / self.scale_y)
+            )
+            # mouse_pos = mouse.get_pos()
             keys = key.get_pressed()
 
             for ev in eventos:
@@ -297,13 +323,24 @@ class Game:
 
             screen_shaker.update(dt)
             self.tratar_eventos(eventos, mouse_pos, keys, dt)
-            self.atualizar(dt, keys, eventos)
+            self.atualizar(dt, keys, eventos, mouse_pos)
             self.desenhar(mouse_pos)
+            scaled = transform.smoothscale(
+                self.render_surface,
+                (self.largura, self.altura)
+            )
+
+            self.window.blit(scaled, (0,0))
+
+            cursor_pos = (
+                int(mouse_pos[0] * self.scale_x),
+                int(mouse_pos[1] * self.scale_y)
+            )
 
             if self.cursor_clicando:
-                self.screen.blit(self.imagem_cursor_click, mouse_pos)
+                self.window.blit(self.imagem_cursor_click, cursor_pos)
             else:
-                self.screen.blit(self.imagem_cursor, mouse_pos)
+                self.window.blit(self.imagem_cursor, cursor_pos)
             display.update()
 
     def tratar_eventos(self, eventos, mouse_pos, keys, dt):
@@ -591,7 +628,7 @@ class Game:
             elif ev.type == MOUSEBUTTONUP:
                 self.cursor_clicando = False
 
-    def atualizar(self, dt, keys, eventos):
+    def atualizar(self, dt, keys, eventos, mouse_pos):
         if self.sala_atual:
             if self.sala_atual.game_vitoria:
                 self.estado = EstadoDoJogo.VITORIA
@@ -619,7 +656,6 @@ class Game:
             self.player.atualizar(dt, keys)
             self.torch_manager.update()
             mouse_buttons = mouse.get_pressed()
-            mouse_pos = mouse.get_pos()
 
             if time.get_ticks() - self.foi_pra_jogo > self.cd_arma_jogo:
                 if mouse_buttons[0]:
@@ -646,12 +682,13 @@ class Game:
                 )
 
     def desenhar(self, mouse_pos):
-        self.screen.fill((0, 0, 0))
+        # self.screen.fill((0, 0, 0))
+        self.render_surface.fill((0,0,0))
         offset_x, offset_y = screen_shaker.offset
 
         if self.estado == EstadoDoJogo.MENU:
             self.menu.run()
-            self.menu.desenho(self.screen)
+            self.menu.desenho(self.screen, mouse_pos)
 
         elif self.estado == EstadoDoJogo.ESCOLHA_ARMA:
             self.menu_armas.menu_ativo = True
@@ -700,7 +737,7 @@ class Game:
 
         elif self.estado == EstadoDoJogo.BAU:
             self.sala_atual.desenhar(self.screen)
-            self.sala_atual.bau.bauEscolherItens(self.screen)
+            self.sala_atual.bau.bauEscolherItens(self.screen, mouse_pos)
 
         elif self.estado == EstadoDoJogo.INVENTARIO:
             self.hud.desenhaFundo()
@@ -722,7 +759,7 @@ class Game:
                 print(f"[GAME DRAW PAUSE CRASH] {type(e).__name__}: {e}")
 
         elif self.estado == EstadoDoJogo.GAME_OVER:
-            self.game_over.gameOverFuncionamento(self.screen)
+            self.game_over.gameOverFuncionamento(self.screen, mouse_pos)
 
         elif self.estado == EstadoDoJogo.CUTSCENE:
             self.sala_atual.cutscene.draw(self.screen)
@@ -761,7 +798,7 @@ class Game:
                     print(f"Erro ao apagar arquivo em data/: {e}")
 
     def tela_intro(self):
-        tela = self.screen
+        tela = self.render_surface
         logo = image.load(resource_path('assets/tela_intro.png')).convert()
         logo = transform.scale(logo, (1920, 1080))
 
@@ -773,11 +810,23 @@ class Game:
             tela.blit(logo, (0, 0))
             fade_surface.set_alpha(alpha)
             tela.blit(fade_surface, (0, 0))
+            scaled = transform.scale(
+                self.render_surface,
+                (self.largura, self.altura)
+            )
+
+            self.window.blit(scaled, (0,0))
             display.update()
             time.delay(30)
 
         # Espera com a imagem por 1.5 segundos
         tela.blit(logo, (0, 0))
+        scaled = transform.scale(
+            self.render_surface,
+            (self.largura, self.altura)
+        )
+
+        self.window.blit(scaled, (0,0))
         display.update()
         time.delay(500)
 
@@ -786,6 +835,12 @@ class Game:
             tela.blit(logo, (0, 0))
             fade_surface.set_alpha(alpha)
             tela.blit(fade_surface, (0, 0))
+            scaled = transform.scale(
+                self.render_surface,
+                (self.largura, self.altura)
+            )
+
+            self.window.blit(scaled, (0,0))
             display.update()
             time.delay(30)
 

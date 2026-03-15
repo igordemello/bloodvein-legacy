@@ -77,7 +77,7 @@ class Menu():
                 self.screen.blit(pygame_frame, (0, 0))
 
 
-    def desenho(self, tela):
+    def desenho(self, tela, mouse_pos):
         musica.tocar(resource_path("BloodVein SCORE/OST/MainMenuTheme.mp3"))
         titulo_sombra = self.fonte.render("Blood Vein", True, (30, 30, 30))
         tela.blit(titulo_sombra, (200 + 4, 100 + 4))
@@ -85,7 +85,6 @@ class Menu():
         titulo = self.fonte.render("Blood Vein", True, (253, 246, 225))
         tela.blit(titulo, (200, 100))
 
-        mouse_pos = mouse.get_pos()
         for i, botao in enumerate(self.botoes):
             is_hovered = botao.rect.collidepoint(mouse_pos) or i == self.index_selecionado
 

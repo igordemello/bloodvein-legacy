@@ -104,12 +104,12 @@ class Bau:
         
 
 
-    def bauEscolherItens(self, tela):
+    def bauEscolherItens(self, tela, mouse_pos):
         overlay = Surface(tela.get_size(), SRCALPHA)
         overlay.fill((0, 0, 0, 180))
         tela.blit(overlay, (0, 0))
 
-        mouse_pos = mouse.get_pos()
+    
 
         for pos, item in enumerate(self.itens_sorteados):
             base_x = 350 + 400 * pos
