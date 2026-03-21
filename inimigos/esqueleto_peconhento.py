@@ -184,7 +184,7 @@ class EsqueletoPeconhento(Inimigo):
 
         self.desenha_debuffs(tela)
         self.detalhesElite(tela)
-        self.desenhar_outline_mouseover(tela, self.hp, self.hp_max)
+        self.desenhar_outline_mouseover(tela, self.hp, self.hp_max, mouse_pos)
 
 
         frame = self.frames[self.frame_index]

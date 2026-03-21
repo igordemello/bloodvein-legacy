@@ -79,7 +79,7 @@ class MenuArmas:
         }
         return traits_atributos[self.traits[self.trait_selecionada]]
 
-    def desenhar_menu(self, tela):
+    def desenhar_menu(self, tela, mouse_pos):
         tela.blit(self.atributosFundo, (0, 0))
 
         atributos_bg = Surface((int(tela.get_width() * 0.5), int(tela.get_height() * 0.75)), SRCALPHA)
@@ -126,7 +126,7 @@ class MenuArmas:
         tela.blit(seta_esq, seta_esq_dif_rect)
         tela.blit(seta_dir, seta_dir_dif_rect)
 
-        self.desenhar_carta_arma(tela)
+        self.desenhar_carta_arma(tela, mouse_pos)
 
         if self.traits[self.trait_selecionada] == "Humano":
             seta_esq_arma = image.load(resource_path('assets/UI/seta_esquerda.png')).convert_alpha()
@@ -138,12 +138,12 @@ class MenuArmas:
             tela.blit(seta_esq_arma, seta_esq_arma_rect)
             tela.blit(seta_dir_arma, seta_dir_arma_rect)
 
-        self.botao_iniciar.changeColor(mouse.get_pos())
+        self.botao_iniciar.changeColor(mouse_pos)
         self.botao_iniciar.update(tela)
 
         self.pause_font = font.Font(resource_path('assets/Fontes/alagard.ttf'), 60)
         self.botaovoltar = Botao(image=None, pos=(100,50), text_input="Voltar", font=self.pause_font, base_color=(255, 255, 255), hovering_color=(200, 200, 200))
-        self.botaovoltar.changeColor(mouse.get_pos())
+        self.botaovoltar.changeColor(mouse_pos)
         self.botaovoltar.update(tela)
 
         return {
@@ -155,10 +155,9 @@ class MenuArmas:
             "seta_arma_direita": seta_dir_arma_rect if self.traits[self.trait_selecionada] == "Humano" else None
         }
 
-    def desenhar_carta_arma(self, tela):
+    def desenhar_carta_arma(self, tela, mouse_pos):
         carta_width, carta_height = 375, 500
         scale = 1.0
-        mouse_pos = mouse.get_pos()
 
         if self.traits[self.trait_selecionada] == "Humano":
             self.arma_atual = self.todas_armas[self.arma_index_humano]
@@ -193,7 +192,7 @@ class MenuArmas:
             tela.blit(sprite_carta, (pos_x, pos_y))
 
     def checar_clique_menu(self, mouse_pos):
-        botoes = self.desenhar_menu(display.get_surface())
+        botoes = self.desenhar_menu(display.get_surface(), mouse_pos)
 
         if botoes["seta_esquerda"].collidepoint(mouse_pos):
             self.trait_selecionada = (self.trait_selecionada - 1) % len(self.traits)

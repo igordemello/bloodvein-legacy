@@ -70,17 +70,19 @@ class Game:
         self.clock = time.Clock()
 
         resolucoes = [
-            (800, 600),  #0
-            (1024, 768), #1
-            (1280, 720), #2
-            (1920, 1080) #3
+            (800, 600),
+            (1024, 768),
+            (1280, 720),
+            (1366, 768),
+            (1600, 900),
+            (1920, 1080),
         ]
 
-        indice = 2
+        indice = 4
 
         self.largura, self.altura = resolucoes[indice]
 
-        modo = "janela"  
+        modo = "fullscreen"  
         # "janela"
         # "fullscreen"
 
@@ -312,7 +314,6 @@ class Game:
                 int(mx / self.scale_x),
                 int(my / self.scale_y)
             )
-            # mouse_pos = mouse.get_pos()
             keys = key.get_pressed()
 
             for ev in eventos:
@@ -402,7 +403,7 @@ class Game:
                     teclas_para_verificar = [K_1, K_2, K_3, K_4]
                     for i in range(4):
                         if ev.key == teclas_para_verificar[i] and self.player.hotkeys[i] != 0:
-                            self.player.ativar_habilidade(self.player.hotkeys[i])
+                            self.player.ativar_habilidade(self.player.hotkeys[i], mouse_pos)
                     # pocoes
                     if ev.key == K_c:
                         self.player.usar_pocao_vida()
@@ -536,9 +537,9 @@ class Game:
                         detalhes=f"Andar {self.andar.numero_andar}",
                         imagem="logo"
                     )
-            self.inventario.checar_clique_armas(eventos)
-            self.inventario.checar_clique_navegacao(eventos)
-            self.inventario.checar_clique_inventario(eventos)
+            self.inventario.checar_clique_armas(eventos, mouse_pos)
+            self.inventario.checar_clique_navegacao(eventos, mouse_pos)
+            self.inventario.checar_clique_inventario(eventos, mouse_pos)
 
         elif self.estado == EstadoDoJogo.GAME_OVER:
             for ev in eventos:
@@ -652,8 +653,8 @@ class Game:
                 )
             return
         if self.estado == EstadoDoJogo.JOGANDO:
-            self.sala_atual.atualizar(dt, keys, eventos)
-            self.player.atualizar(dt, keys)
+            self.sala_atual.atualizar(dt, keys, eventos, mouse_pos)
+            self.player.atualizar(dt, keys, mouse_pos)
             self.torch_manager.update()
             mouse_buttons = mouse.get_pressed()
 
@@ -692,11 +693,11 @@ class Game:
 
         elif self.estado == EstadoDoJogo.ESCOLHA_ARMA:
             self.menu_armas.menu_ativo = True
-            self.menu_armas.desenhar_menu(self.screen)
+            self.menu_armas.desenhar_menu(self.screen, mouse_pos)
 
         elif self.estado == EstadoDoJogo.JOGANDO:
             self.hud.desenhaFundo()
-            self.sala_atual.desenhar(self.screen)
+            self.sala_atual.desenhar(self.screen, mouse_pos)
         
             # desenha tochas (sprite)
             self.torch_manager.draw(self.screen, screen_shaker.offset)
@@ -724,37 +725,37 @@ class Game:
             # escuridão final
             self.screen.blit(self.darkness, (0, 0))
 
-            self.sala_atual.desenhar_inimigos(self.screen)
+            self.sala_atual.desenhar_inimigos(self.screen, mouse_pos)
             self.player.desenhar(self.screen, mouse_pos)
             self.hud.desenhar()
             self.hud.update(self.clock.get_time())
             self.minimapa.draw()
-            self.inventario.desenhar()
+            self.inventario.desenhar(mouse_pos)
 
         elif self.estado == EstadoDoJogo.LOJA:
-            self.sala_atual.desenhar(self.screen)
-            self.sala_atual.loja.desenhar_loja(self.screen)
+            self.sala_atual.desenhar(self.screen, mouse_pos)
+            self.sala_atual.loja.desenhar_loja(self.screen, mouse_pos)
 
         elif self.estado == EstadoDoJogo.BAU:
-            self.sala_atual.desenhar(self.screen)
+            self.sala_atual.desenhar(self.screen, mouse_pos)
             self.sala_atual.bau.bauEscolherItens(self.screen, mouse_pos)
 
         elif self.estado == EstadoDoJogo.INVENTARIO:
             self.hud.desenhaFundo()
-            self.sala_atual.desenhar(self.screen)
+            self.sala_atual.desenhar(self.screen, mouse_pos)
             self.player.desenhar(self.screen, mouse_pos)
-            self.sala_atual.desenhar_inimigos(self.screen)
+            self.sala_atual.desenhar_inimigos(self.screen, mouse_pos)
             self.hud.desenhar(minimal=True)
             self.hud.update(self.clock.get_time())
             self.minimapa.draw()
-            self.inventario.desenhar()
+            self.inventario.desenhar(mouse_pos)
 
 
         elif self.estado == EstadoDoJogo.PAUSADO:
             try:
                 self.clock.tick(60)  # Garante que o loop anda mesmo travado
                 print("PAUSE FRAME OK")  # Ver se trava nesse print
-                self.pause.pauseFuncionamento(self.screen, self.imagem_fundo_pause)
+                self.pause.pauseFuncionamento(self.screen, mouse_pos,self.imagem_fundo_pause)
             except Exception as e:
                 print(f"[GAME DRAW PAUSE CRASH] {type(e).__name__}: {e}")
 

@@ -144,7 +144,7 @@ class RatoDeSangue(Inimigo):
         self.set_velocidade_y(self.vy)
         self.atualizar_animacao()
 
-    def desenhar(self, tela, playerpos, offset=(0, 0)):
+    def desenhar(self, tela, playerpos, offset=(0, 0), mouse_pos=(0, 0)):
         if not self.vivo or not self.frames:
             return
 
@@ -154,7 +154,7 @@ class RatoDeSangue(Inimigo):
 
         self.desenha_debuffs(tela)
         self.detalhesElite(tela)
-        self.desenhar_outline_mouseover(tela, self.hp, self.hp_max)
+        self.desenhar_outline_mouseover(tela, self.hp, self.hp_max, mouse_pos)
 
 
         frame = self.frames[self.frame_index % len(self.frames)]

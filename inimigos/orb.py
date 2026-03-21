@@ -58,14 +58,14 @@ class Orb(Inimigo):
             frame = transform.scale(frame, (self.largura, self.altura))
             self.attack_frames.append(frame)
 
-    def desenhar(self, tela, player_pos, offset=(0, 0)):
+    def desenhar(self, tela, player_pos, offset=(0, 0), mouse_pos=(0, 0)):
         now = time.get_ticks()
         offset_x, offset_y = offset
         draw_x = self.x + offset_x
         draw_y = self.y + offset_y
         self.desenha_debuffs(tela)
         self.detalhesElite(tela)
-        self.desenhar_outline_mouseover(tela, self.hp, self.hp_max)
+        self.desenhar_outline_mouseover(tela, self.hp, self.hp_max, mouse_pos)
 
 
         if self.anima_hit:

@@ -248,7 +248,7 @@ class NuvemBoss2(Inimigo):
                 self.veneno_ativo = False
 
 
-    def desenhar(self, tela, playerpos, offset=(0, 0)):
+    def desenhar(self, tela, playerpos, offset=(0, 0), mouse_pos=(0, 0)):
         self.desenha_debuffs(tela)
         if not self.vivo or not self.frames:
             return
@@ -260,7 +260,7 @@ class NuvemBoss2(Inimigo):
         draw_x = self.x + offset_x
         draw_y = self.y + offset_y
 
-        self.desenhar_outline_mouseover(tela, self.hp, self.hp_max)
+        self.desenhar_outline_mouseover(tela, self.hp, self.hp_max, mouse_pos)
 
         frame = self.frames[self.frame_index]
 

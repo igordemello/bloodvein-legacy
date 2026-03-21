@@ -87,14 +87,13 @@ class Loja():
         return font.Font(resource_path('assets/Fontes/alagard.ttf'), tam)
     
 
-    def desenhar_loja(self, tela):
+    def desenhar_loja(self, tela, mouse_pos):
         self.musica = 1
         musica.tocar(resource_path("BloodVein SCORE/OST/Loja.mp3"))
         tela.fill((0, 0, 0))
         tela.blit(self.fundo,(0,0))
         tela.blit(self.personagem_img, (800, 50))
 
-        mouse_pos = mouse.get_pos()
         self.tempo += 0.05
 
         #quantidade de almas

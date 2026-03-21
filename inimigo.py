@@ -173,8 +173,7 @@ class Inimigo:
         if elite==True:
             self.elite = True
 
-    def desenhar_outline_mouseover(self, tela, hp, hpMax):
-        mouse_pos = mouse.get_pos()
+    def desenhar_outline_mouseover(self, tela, hp, hpMax, mouse_pos):
 
         if not hasattr(self, 'tempo_mouseover'):
             self.tempo_mouseover = 0

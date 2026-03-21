@@ -149,13 +149,13 @@ class MorcegoPadrao(Inimigo):
             self.frame_time = 0
             self.frame_index = (self.frame_index + 1) % len(self.frames)
 
-    def desenhar(self, tela, player_pos, offset=(0, 0)):
+    def desenhar(self, tela, player_pos, offset=(0, 0), mouse_pos=(0, 0)):
         if not self.vivo or len(self.frames) == 0:
             return
 
         self.desenha_debuffs(tela)
         self.detalhesElite(tela)
-        self.desenhar_outline_mouseover(tela,self.hp,self.hp_max)
+        self.desenhar_outline_mouseover(tela,self.hp,self.hp_max, mouse_pos)
 
 
         offset_x, offset_y = offset

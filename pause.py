@@ -22,7 +22,7 @@ class Pause:
         self.pause_font = font.Font(resource_path('assets/Fontes/alagard.ttf'), 72)
 
 
-    def pauseFuncionamento(self, tela, imagem_fundo=None):
+    def pauseFuncionamento(self, tela, mouse_pos,imagem_fundo=None):
         try:
             self.menu_ativo = True
 
@@ -39,7 +39,6 @@ class Pause:
             tela.blit(pause_text, text_rect)
 
             # Hover e update dos botões
-            mouse_pos = mouse.get_pos()
             for botao in self.botoes:
                 botao.changeColor(mouse_pos)
                 botao.update(tela)

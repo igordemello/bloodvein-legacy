@@ -171,7 +171,7 @@ class EsqueletoGelo(Inimigo):
             if self.veneno_ticks <= 0:
                 self.veneno_ativo = False
 
-    def desenhar(self, tela, playerpos, offset=(0, 0)):
+    def desenhar(self, tela, playerpos, offset=(0, 0), mouse_pos=(0, 0)):
         if not self.vivo or not self.frames:
             return
         
@@ -184,7 +184,7 @@ class EsqueletoGelo(Inimigo):
 
         self.desenha_debuffs(tela)
         self.detalhesElite(tela)
-        self.desenhar_outline_mouseover(tela, self.hp, self.hp_max)
+        self.desenhar_outline_mouseover(tela, self.hp, self.hp_max, mouse_pos)
 
 
         frame = self.frames[self.frame_index]

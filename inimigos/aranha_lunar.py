@@ -139,7 +139,7 @@ class AranhaLunar(Inimigo):
         self.rect.topleft = (round(self.x), round(self.y))
         self.atualizar_animacao()
 
-    def desenhar(self, tela, playerpos, offset=(0, 0)):
+    def desenhar(self, tela, playerpos, offset=(0, 0), mouse_pos=(0, 0)):
         if not self.vivo or not self.frames:
             return
 
@@ -151,7 +151,7 @@ class AranhaLunar(Inimigo):
 
         self.desenha_debuffs(tela)
         self.detalhesElite(tela)
-        self.desenhar_outline_mouseover(tela, self.hp, self.hp_max)
+        self.desenhar_outline_mouseover(tela, self.hp, self.hp_max, mouse_pos)
 
         frame = self.frames[self.frame_index]
 

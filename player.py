@@ -325,7 +325,7 @@ class Player():
                 self.itemAtivoEsgotado = self.itemAtivo
                 self.itemAtivo = None
 
-    def atualizar(self, dt, teclas):
+    def atualizar(self, dt, teclas, mouse_pos):
         current_time = time.get_ticks()
         if hasattr(self, 'tempo_descongelar') and current_time >= self.tempo_descongelar:
             self.travado = False
@@ -472,7 +472,7 @@ class Player():
                         self.animacoes[self.anim_direcao]) and self.anim_direcao in self.animacoes_principais:
                     self.anim_frame = 4
         else:
-            angulo = self.calcular_angulo(mouse.get_pos())
+            angulo = self.calcular_angulo(mouse_pos)
             angulo_deg = math.degrees(angulo) % 360
 
             if 45 < angulo_deg <= 135:
@@ -527,7 +527,7 @@ class Player():
                 self.revives -= 1
 
         if self.attacking:
-            self.atualizar_ataque(dt)
+            self.atualizar_ataque(dt, mouse_pos)
 
         if self.anim_direcao in self.animacoes:
             animacao = self.animacoes[self.anim_direcao]
@@ -599,7 +599,7 @@ class Player():
 
 
 
-    def atualizar_ataque(self, dt):
+    def atualizar_ataque(self, dt, mouse_pos):
         current_time = time.get_ticks()
         attack_duration = 300 / self.arma.velocidade
         self.attack_progress = min(1.0, (current_time - self.attack_start_time) / attack_duration)
@@ -609,7 +609,7 @@ class Player():
             self.sword_trail_particles = []
             return
 
-        angle = self.calcular_angulo(mouse.get_pos())
+        angle = self.calcular_angulo(mouse_pos)
         centro_jogador = (self.player_rect.centerx, self.player_rect.centery)
         base_x = centro_jogador[0] + math.cos(angle) * (self.radius - 5)
         base_y = centro_jogador[1] + math.sin(angle) * (self.radius - 5)
@@ -1290,10 +1290,9 @@ class Player():
 
     # ---------HABILIDADES---------
 
-    def bola_de_fogo(self):
+    def bola_de_fogo(self, mouse_pos):
         if "Bola de Fogo" not in self.habilidades:
             return
-        mouse_pos = mouse.get_pos()
         sprite_projetil = image.load(resource_path('assets/player/bola_de_fogo.png')).convert_alpha()
         current_time = time.get_ticks()
         custoHabilidade = 30 * self.mpModificador
@@ -1345,11 +1344,10 @@ class Player():
         self.mp -= custoHabilidade
         self.last_dash_time = current_time
 
-    def nevasca(self):
+    def nevasca(self, mouse_pos):
         if "Nevasca" not in self.habilidades:
             return
         self.nevascaAtivada = True
-        mouse_pos = mouse.get_pos()
         sprite_projetil = image.load(resource_path('assets/player/bola_de_gelo.png')).convert_alpha()
         current_time = time.get_ticks()
         custoHabilidade = 30*self.mpModificador
@@ -1365,11 +1363,10 @@ class Player():
             self.mp -= custoHabilidade
             self.last_dash_time = current_time
 
-    def trovao(self):
+    def trovao(self, mouse_pos):
         if "Trovão" not in self.habilidades:
             return
         self.trovaoAtivado = True
-        mouse_pos = mouse.get_pos()
         sprite_projetil = image.load(resource_path('assets/player/Raio.png')).convert_alpha()
         current_time = time.get_ticks()
         custoHabilidade = 40*self.mpModificador
@@ -1436,19 +1433,19 @@ class Player():
             return
         self.mpModificador = 0.5
 
-    def ativar_habilidade(self, nome_habilidade):
+    def ativar_habilidade(self, nome_habilidade, mouse_pos):
         for i, hab in enumerate(self.hotkeys):
             if hab == nome_habilidade:
                 self.hud.mark_hotkey_pressed(i)
                 break
         if nome_habilidade == "Bola de Fogo":
-            self.bola_de_fogo()
+            self.bola_de_fogo(mouse_pos)
         elif nome_habilidade == "Clarão":
             self.clarao()
         elif nome_habilidade == "Nevasca":
-            self.nevasca()
+            self.nevasca(mouse_pos)
         elif nome_habilidade == "Trovão":
-            self.trovao()
+            self.trovao(mouse_pos)
         elif nome_habilidade == "Núvem de Veneno":
             self.nuvem_de_veneno()
         elif nome_habilidade == "Fonte Arcana":

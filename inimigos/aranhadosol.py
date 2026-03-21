@@ -144,13 +144,13 @@ class AranhaDoSol(Inimigo):
             if p["lifetime"] <= 0:
                 self.projeteis.remove(p)
 
-    def desenhar(self, tela, player_pos, offset=(0, 0)):
+    def desenhar(self, tela, player_pos, offset=(0, 0), mouse_pos=(0, 0)):
         if not self.vivo or not self.frames:
             return
 
         self.desenha_debuffs(tela)
         self.detalhesElite(tela)
-        self.desenhar_outline_mouseover(tela, self.hp, self.hp_max)
+        self.desenhar_outline_mouseover(tela, self.hp, self.hp_max, mouse_pos)
 
         draw_x = self.x + offset[0]
         draw_y = self.y + offset[1]

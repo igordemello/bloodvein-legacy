@@ -155,11 +155,11 @@ class Espectro(Inimigo):
         # self.rect.topleft = (round(self.x), round(self.y))
         self.atualizar_animacao()
 
-    def desenhar(self, tela, player_pos, offset=(0, 0)):
+    def desenhar(self, tela, player_pos, offset=(0, 0), mouse_pos=(0, 0)):
         if not self.vivo or not self.frames:
             return
         self.detalhesElite(tela)
-        self.desenhar_outline_mouseover(tela, self.hp, self.hp_max)
+        self.desenhar_outline_mouseover(tela, self.hp, self.hp_max, mouse_pos)
 
         offset_x, offset_y = offset
         draw_x = self.x + offset_x

@@ -463,7 +463,7 @@ class Sala:
                }
 
 
-    def atualizar(self,dt,teclas, eventos):
+    def atualizar(self,dt,teclas, eventos, mouse_pos):
 
         agora = time.get_ticks()
         if agora - self.portal_last_update >= self.portal_frame_delay:
@@ -663,7 +663,7 @@ class Sala:
         for evento in eventos:
             if evento.type == MOUSEBUTTONDOWN and evento.button == 1:
                 for botao, arma in self.loots[:]:
-                    if botao.checkForInput(mouse.get_pos()):
+                    if botao.checkForInput(mouse_pos):
                         if len(self.player.inventario) < 21:
                             arma.aplicaModificador()
                             self.player.inventario.append(arma)
@@ -674,11 +674,11 @@ class Sala:
 
 
 
-    def desenhar_inimigos(self, tela):
+    def desenhar_inimigos(self, tela, mouse_pos):
         offset_x, offset_y = screen_shaker.offset
         for inimigo in self.inimigos:
             if inimigo.vivo:
-                inimigo.desenhar(tela, (self.player.x, self.player.y), offset=(offset_x, offset_y))
+                inimigo.desenhar(tela, (self.player.x, self.player.y), offset=(offset_x, offset_y), mouse_pos=mouse_pos)
             else:
                 if not getattr(inimigo, "alma_coletada", True):
                     if not hasattr(inimigo, "vai_dropar_alma"):
@@ -767,7 +767,7 @@ class Sala:
                         self.loots.append((botao, arma))
                         inimigo.loot_botao_criado = True
 
-    def desenhar(self, tela):
+    def desenhar(self, tela, mouse_pos):
 
         if self.cutscene and self.cutscene.ativa:
             self.cutscene.draw(self.tela)
@@ -878,7 +878,6 @@ class Sala:
             )
             self.tela.blit(botao.image, botao.rect)
 
-            mouse_pos = mouse.get_pos()
             if botao.rect.collidepoint(mouse_pos):
                 botao.changeColor(mouse_pos)
 
@@ -996,7 +995,6 @@ class Sala:
     def _trocar_de_sala(self):
         if self.em_transicao:
             return
-        # self.fade(fade_in=False, duration=2000)
         som.tocar('passar_porta')
         for porta in self.ranges_doors:
             if self.player.get_hitbox().colliderect(porta['colisor']) and self.porta_liberada:
@@ -1044,7 +1042,6 @@ class Sala:
 
                         print(f"Transição para: {nova_sala} via {codigo_porta}")
                         self.em_transicao = False
-                        # self.fade(fade_in=True, duration=2000)
                         return
                 break
 
@@ -1083,33 +1080,6 @@ class Sala:
         rect = pocao_img.get_rect(center=pos_shake)
         self.tela.blit(pocao_img, rect)
 
-    def fade(self, fade_in=True, duration=500):
-        """Efeito de transição de fade (para entrada ou saída de sala)
-        Args:
-            fade_in (bool): Se True, fade de preto para tela (entrada). Se False, fade para preto (saída).
-            duration (int): Duração total do efeito em milissegundos.
-        """
-
-        fade_surface = Surface((1425,775), SRCALPHA)
-        steps = 30
-        #delay = max(1, duration // steps)  # Garante pelo menos 1ms de delay
-
-        if fade_in:
-            # Fade in (preto -> tela)
-            for alpha in range(255, -1, -255 // steps):
-                self.desenhar(self.tela)
-                fade_surface.fill((0, 0, 0, alpha))
-                self.tela.blit(fade_surface, (248,100))
-                display.flip()
-                #time.delay(delay)
-        else:
-            # Fade out (tela -> preto)
-            for alpha in range(0, 256, 255 // steps):
-                self.desenhar(self.tela)
-                fade_surface.fill((0, 0, 0, alpha))
-                self.tela.blit(fade_surface, (248,100))
-                display.flip()
-                #time.delay(delay)
 
     def avancar_andar(self):
         # Verifica se é sala do boss e se colidiu com o portal

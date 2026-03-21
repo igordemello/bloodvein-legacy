@@ -177,7 +177,7 @@ class VampiroSol(Inimigo):
             self.frame_time = 0
             self.frame_index = (self.frame_index + 1) % len(self.frames)
 
-    def desenhar(self, tela, playerpos, offset=(0, 0)):
+    def desenhar(self, tela, playerpos, offset=(0, 0), mouse_pos=(0, 0)):
         if not self.vivo or not self.frames:
             return
 
@@ -187,7 +187,7 @@ class VampiroSol(Inimigo):
         draw_y = self.rect.y + offset_y
 
         self.detalhesElite(tela)
-        self.desenhar_outline_mouseover(tela, self.hp, self.hp_max)
+        self.desenhar_outline_mouseover(tela, self.hp, self.hp_max, mouse_pos)
 
 
         frame = self.frames[min(self.frame_index, len(self.frames) - 1)]

@@ -175,7 +175,7 @@ class Zombie(Inimigo):
             if self.veneno_ticks <= 0:
                 self.veneno_ativo = False
 
-    def desenhar(self, tela, playerpos, offset=(0, 0)):
+    def desenhar(self, tela, playerpos, offset=(0, 0), mouse_pos=(0, 0)):
         if not self.vivo or not self.frames:
             return
         
@@ -187,7 +187,7 @@ class Zombie(Inimigo):
         draw_y = self.y + offset_y
 
         self.detalhesElite(tela)
-        self.desenhar_outline_mouseover(tela, self.hp, self.hp_max)
+        self.desenhar_outline_mouseover(tela, self.hp, self.hp_max, mouse_pos)
 
 
         self.desenha_debuffs(tela)

@@ -129,13 +129,13 @@ class CaveiraDeFogo(Inimigo):
 
         self.atualizar_animacao()
 
-    def desenhar(self, tela, player_pos, offset=(0, 0)):
+    def desenhar(self, tela, player_pos, offset=(0, 0), mouse_pos=(0, 0)):
         if not self.vivo or len(self.frames) == 0:
             return
         self.desenha_debuffs(tela)
         self.desenhar_dano(tela, offset)
         self.detalhesElite(tela)
-        self.desenhar_outline_mouseover(tela, self.hp, self.hp_max)
+        self.desenhar_outline_mouseover(tela, self.hp, self.hp_max, mouse_pos)
 
         offset_x, offset_y = offset
         draw_x = self.x + offset_x
