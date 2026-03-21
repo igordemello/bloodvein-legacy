@@ -80,7 +80,9 @@ class Game:
 
         indice = 4
 
-        self.largura, self.altura = resolucoes[indice]
+        info = display.Info()
+
+        self.largura, self.altura = info.current_w, info.current_h
 
         modo = "fullscreen"  
         # "janela"
