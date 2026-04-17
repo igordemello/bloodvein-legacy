@@ -5,6 +5,7 @@ from botao import Botao
 from pygame.math import Vector2
 import cv2
 import numpy as np
+import game
 from som import GerenciadorDeSom
 from som import som
 from som import GerenciadorDeMusica
@@ -30,7 +31,8 @@ class Menu():
             Botao(None, (600, 420), "Novo Jogo", self.fonte_botoes, self.cor_base, self.cor_hover, "jogo"),
             Botao(None, (600, 520), "Créditos", self.fonte_botoes, self.cor_base, self.cor_hover, "creditos"),
             Botao(None, (600, 620), "Controles", self.fonte_botoes, self.cor_base, self.cor_hover, "controles"),
-            Botao(None, (600, 720), "Sair", self.fonte_botoes, self.cor_base, self.cor_hover, "sair"),
+            Botao(None, (600, 720), "Opções", self.fonte_botoes, self.cor_base, self.cor_hover, "opcoes"),
+            Botao(None, (600, 820), "Sair", self.fonte_botoes, self.cor_base, self.cor_hover, "sair"),
         ]
 
         self.hover_escala = [Vector2(1.0, 0.0) for _ in self.botoes]
@@ -77,13 +79,16 @@ class Menu():
                 self.screen.blit(pygame_frame, (0, 0))
 
 
-    def desenho(self, tela, mouse_pos):
+    def desenho(self, tela, mouse_pos, game_obj):
         musica.tocar(resource_path("BloodVein SCORE/OST/MainMenuTheme.mp3"))
         titulo_sombra = self.fonte.render("Blood Vein", True, (30, 30, 30))
         tela.blit(titulo_sombra, (200 + 4, 100 + 4))
 
         titulo = self.fonte.render("Blood Vein", True, (253, 246, 225))
         tela.blit(titulo, (200, 100))
+
+        if game_obj.estado == game.EstadoDoJogo.CONFIG:
+            return
 
         for i, botao in enumerate(self.botoes):
             is_hovered = botao.rect.collidepoint(mouse_pos) or i == self.index_selecionado

@@ -3,6 +3,7 @@ import sys
 from pygame.locals import QUIT
 import math
 from bau import Bau
+from config import Config
 from hud import Hud
 from inimigo import Inimigo
 from player import Player
@@ -53,6 +54,7 @@ class EstadoDoJogo(Enum):
     CONTROLES = auto()
     CREDITOS = auto()
     VITORIA = auto()
+    CONFIG = auto()
 
 class Game:
     def __init__(self):
@@ -69,34 +71,13 @@ class Game:
 
         self.clock = time.Clock()
 
-        resolucoes = [
-            (800, 600),
-            (1024, 768),
-            (1280, 720),
-            (1366, 768),
-            (1600, 900),
-            (1920, 1080),
-        ]
-
-        indice = 4
-
         info = display.Info()
 
         self.largura, self.altura = info.current_w, info.current_h
-
-        modo = "fullscreen"  
-        # "janela"
-        # "fullscreen"
-
-        flags = DOUBLEBUF
-
-        if modo == "fullscreen":
-            flags |= FULLSCREEN | HWSURFACE
-
-
+        # self.largura, self.altura = (1280,720)
         self.window = display.set_mode(
             (self.largura, self.altura),
-            flags=flags,
+            flags= DOUBLEBUF | FULLSCREEN | HWSURFACE,
             vsync=1
         )
 
@@ -106,6 +87,8 @@ class Game:
 
         self.scale_x = self.largura / BASE_W
         self.scale_y = self.altura / BASE_H
+
+        self.config = Config(self.screen, self)
 
         display.set_caption("Blood Vein")
         mouse.set_visible(False)
@@ -387,6 +370,8 @@ class Game:
                         self.estado = EstadoDoJogo.CREDITOS
                     elif escolha == "controles":
                         self.estado = EstadoDoJogo.CONTROLES
+                    elif escolha == "opcoes":
+                        self.estado = EstadoDoJogo.CONFIG
                     elif escolha == "sair":
                         self.discord.fechar()
                         quit()
@@ -615,6 +600,18 @@ class Game:
                         )
                         self.foi_pra_jogo = time.get_ticks()
 
+        elif self.estado == EstadoDoJogo.CONFIG:
+            for ev in eventos:
+                if ev.type == KEYDOWN:
+                    if ev.key == K_RIGHT:
+                        self.config.proxima_resolucao()
+
+                    elif ev.key == K_RETURN:
+                        self.config.aplicar()
+
+                    elif ev.key == K_ESCAPE:
+                        self.estado = EstadoDoJogo.MENU
+
         elif self.estado == EstadoDoJogo.CONTROLES or self.estado == EstadoDoJogo.CREDITOS or self.estado == EstadoDoJogo.VITORIA:
             for ev in eventos:
                 if ev.type == KEYDOWN and ev.key == K_ESCAPE:
@@ -689,9 +686,9 @@ class Game:
         self.render_surface.fill((0,0,0))
         offset_x, offset_y = screen_shaker.offset
 
-        if self.estado == EstadoDoJogo.MENU:
+        if self.estado == EstadoDoJogo.MENU or self.estado == EstadoDoJogo.CONFIG:
             self.menu.run()
-            self.menu.desenho(self.screen, mouse_pos)
+            self.menu.desenho(self.screen, mouse_pos, self)
 
         elif self.estado == EstadoDoJogo.ESCOLHA_ARMA:
             self.menu_armas.menu_ativo = True
@@ -780,6 +777,9 @@ class Game:
 
         elif self.estado == EstadoDoJogo.CREDITOS:
             self.screen.blit(self.imagem_creditos, (0, 0))
+
+        if self.estado == EstadoDoJogo.CONFIG:
+            self.config.desenhar()
 
         if self.mensagem_salvo and time.get_ticks() - self.tempo_mensagem_salvo < 2000:
             self.screen.blit(self.mensagem_salvo, (1920 // 2 - self.mensagem_salvo.get_width() // 2, 900))
