@@ -37,6 +37,7 @@ from dificuldade import dificuldade_global
 from utils import resource_path
 from discord_rpc import DiscordRPC
 from input_manager import InputManager
+from tutorial import Tutorial
 
 BASE_W = 1920
 BASE_H = 1080
@@ -120,6 +121,9 @@ class Game:
 
         self.mensagem_salvo = None
         self.tempo_mensagem_salvo = 0
+        self.mensagem_tutorial_dica = None
+        self.tempo_mensagem_tutorial_dica = 0
+        self.fonte_dica = font.Font(resource_path('assets/fontes/alagard.ttf'), 30)
 
         self.bau_foi_aberto_esse_frame = False
 
@@ -136,6 +140,7 @@ class Game:
         self.foi_pra_jogo = 0
 
         self.imagem_fundo_pause = None
+        self.tutorial = None
 
         self.imagem_controles = image.load(resource_path('assets/tela_controles_VERSAO_DE_GENTE.png')).convert_alpha()
         self.imagem_vitoria = image.load(resource_path('assets/fim-de-jogo.png')).convert_alpha()
@@ -206,6 +211,8 @@ class Game:
             }
         self.inventario = Inventario(self.screen, self.player, self.hud)
         self.menu_armas_ativo = com_nova_run
+        if com_nova_run:
+            self.tutorial = Tutorial()
         self.darkness = Surface((1920, 1080), SRCALPHA)
         # self.darkness.fill((0, 0, 0, 220))
 
@@ -309,6 +316,7 @@ class Game:
                     quit()
                     sys.exit()
 
+            musica.atualizar()
             screen_shaker.update(dt)
             self.tratar_eventos(eventos, mouse_pos, keys, dt)
             self.atualizar(dt, keys, eventos, mouse_pos)
@@ -413,14 +421,20 @@ class Game:
                                 encontrado = True
                                 break
 
+                    if ev.key == K_RETURN and self.tutorial and self.tutorial.ativo:
+                        self.tutorial.avancar()
                     if ev.key == K_ESCAPE:
-                        self.imagem_fundo_pause = self.screen.copy()
-                        self.estado = EstadoDoJogo.PAUSADO
-                        self.atualizar_rpc(
-                            estado=f"Jogo pausado",
-                            detalhes=f"Planejando o próximo movimento",
-                            imagem="logo"
-                        )
+                        if self.tutorial and self.tutorial.ativo and not self.tutorial.fading_out:
+                            self.tutorial.pular()
+                        else:
+                            musica.pausar()
+                            self.imagem_fundo_pause = self.screen.copy()
+                            self.estado = EstadoDoJogo.PAUSADO
+                            self.atualizar_rpc(
+                                estado=f"Jogo pausado",
+                                detalhes=f"Planejando o próximo movimento",
+                                imagem="logo"
+                            )
                     elif ev.key == K_i:
                         self.inventario.toggle()
                         self.estado = EstadoDoJogo.INVENTARIO if self.inventario.visible else EstadoDoJogo.JOGANDO
@@ -431,10 +445,10 @@ class Game:
                                 self.sala_atual.hitbox_loja()[0]):
                             self.estado = EstadoDoJogo.LOJA
                 elif ev.type == MOUSEBUTTONDOWN:
-                    if ev.button == 1:
+                    tutorial_ativo = self.tutorial and self.tutorial.ativo
+                    if ev.button == 1 and not tutorial_ativo:
                         self.player.ataque_espadaPrincipal(self.sala_atual.inimigos, mouse_pos, dt)
-
-                    elif ev.button == 3:
+                    elif ev.button == 3 and not tutorial_ativo:
                         self.player.ataque_espadaSecundario(self.sala_atual.inimigos, mouse_pos, dt)
 
 
@@ -492,6 +506,7 @@ class Game:
             for ev in eventos:
                 print(f"Evento: {ev}")
                 if ev.type == KEYDOWN and ev.key == K_ESCAPE:
+                    musica.retomar()
                     self.estado = EstadoDoJogo.JOGANDO
                     self.atualizar_rpc(
                         estado=f"Explorando o castelo",
@@ -521,6 +536,16 @@ class Game:
                         self.config.modo_pause  = True
                         self.config_origem = EstadoDoJogo.PAUSADO
                         self.estado = EstadoDoJogo.CONFIG
+                    elif escolha == "tutorial":
+                        musica.retomar()
+                        self.pause.menu_ativo = False
+                        self.tutorial = Tutorial()
+                        self.estado = EstadoDoJogo.JOGANDO
+                        self.atualizar_rpc(
+                            estado=f"Explorando o castelo",
+                            detalhes=f"Andar {self.andar.numero_andar}",
+                            imagem="logo"
+                        )
 
         elif self.estado == EstadoDoJogo.INVENTARIO:
             for ev in eventos:
@@ -659,13 +684,24 @@ class Game:
                 )
             return
         if self.estado == EstadoDoJogo.JOGANDO:
+            if self.tutorial:
+                if self.tutorial.ativo:
+                    self.tutorial.update()
+                    self.player.travado = True
+                    self.player.ultimo_dano = time.get_ticks()
+                else:
+                    self.player.travado = False
+                    self.tutorial = None
+                    self.mensagem_tutorial_dica = self.fonte_dica.render(
+                        "Você pode rever o Tutorial pelo menu de Pause (ESC)", True, (212, 175, 55))
+                    self.tempo_mensagem_tutorial_dica = time.get_ticks()
             self.sala_atual.atualizar(dt, keys, eventos, mouse_pos)
             self.player.atualizar(dt, keys, mouse_pos)
             self.torch_manager.update()
             mouse_buttons = mouse.get_pressed()
 
             if time.get_ticks() - self.foi_pra_jogo > self.cd_arma_jogo:
-                if mouse_buttons[0]:
+                if mouse_buttons[0] and not (self.tutorial and self.tutorial.ativo):
                     self.player.ataque_espadaPrincipal(self.sala_atual.inimigos, mouse_pos, dt)
 
             if (
@@ -744,6 +780,8 @@ class Game:
             self.hud.update(self.clock.get_time())
             self.minimapa.draw()
             self.inventario.desenhar(mouse_pos)
+            if self.tutorial:
+                self.tutorial.desenhar(self.screen)
 
         elif self.estado == EstadoDoJogo.LOJA:
             self.sala_atual.desenhar(self.screen, mouse_pos)
@@ -797,6 +835,10 @@ class Game:
 
         if self.mensagem_salvo and time.get_ticks() - self.tempo_mensagem_salvo < 2000:
             self.screen.blit(self.mensagem_salvo, (1920 // 2 - self.mensagem_salvo.get_width() // 2, 900))
+
+        if self.mensagem_tutorial_dica and time.get_ticks() - self.tempo_mensagem_tutorial_dica < 4000:
+            self.screen.blit(self.mensagem_tutorial_dica,
+                             (1920 // 2 - self.mensagem_tutorial_dica.get_width() // 2, 590))
 
     def apagar_saves(self):
         try:

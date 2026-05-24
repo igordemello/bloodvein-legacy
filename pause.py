@@ -13,11 +13,12 @@ class Pause:
 
         CX = 1920 // 2
 
-        self.botaocontinuar = Botao(None, (CX, 420), "Continuar", botao_font, self.cor_base, self.cor_hover, "continuar")
-        self.botaoopcoes    = Botao(None, (CX, 540), "Opções",    botao_font, self.cor_base, self.cor_hover, "opcoes")
-        self.botaosair      = Botao(None, (CX, 660), "Sair",      botao_font, self.cor_base, self.cor_hover, "sair")
+        self.botaocontinuar = Botao(None, (CX, 360), "Continuar", botao_font, self.cor_base, self.cor_hover, "continuar")
+        self.botaoopcoes    = Botao(None, (CX, 480), "Opções",    botao_font, self.cor_base, self.cor_hover, "opcoes")
+        self.botaotutorial  = Botao(None, (CX, 600), "Tutorial",  botao_font, self.cor_base, self.cor_hover, "tutorial")
+        self.botaosair      = Botao(None, (CX, 720), "Sair",      botao_font, self.cor_base, self.cor_hover, "sair")
 
-        self.botoes = [self.botaocontinuar, self.botaoopcoes, self.botaosair]
+        self.botoes = [self.botaocontinuar, self.botaoopcoes, self.botaotutorial, self.botaosair]
 
         self.hover_escala = [Vector2(1.0, 0.0) for _ in self.botoes]
         self.ultimo_hover = -1
