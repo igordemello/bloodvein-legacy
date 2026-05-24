@@ -73,7 +73,8 @@ class Game:
 
         info = display.Info()
 
-        self.largura, self.altura = info.current_w, info.current_h
+        self.monitor_w, self.monitor_h = info.current_w, info.current_h
+        self.largura, self.altura = self.monitor_w, self.monitor_h
         # self.largura, self.altura = (1280,720)
         self.window = display.set_mode(
             (self.largura, self.altura),
@@ -107,6 +108,7 @@ class Game:
         self.dados_run_salvos = None
 
         self.estado = EstadoDoJogo.MENU
+        self.config_origem = EstadoDoJogo.MENU
         self.fonte = font.Font(resource_path('assets/fontes/alagard.ttf'), 48)
         self.fps_font = font.SysFont("Arial", 24)
         self.fps_text = self.fps_font.render("FPS: 60", True, (255, 255, 255))
@@ -371,6 +373,8 @@ class Game:
                     elif escolha == "controles":
                         self.estado = EstadoDoJogo.CONTROLES
                     elif escolha == "opcoes":
+                        self.config.modo_pause  = False
+                        self.config_origem = EstadoDoJogo.MENU
                         self.estado = EstadoDoJogo.CONFIG
                     elif escolha == "sair":
                         self.discord.fechar()
@@ -513,6 +517,10 @@ class Game:
                             imagem="logo"
                         )
                         self.pausado = False
+                    elif escolha == "opcoes":
+                        self.config.modo_pause  = True
+                        self.config_origem = EstadoDoJogo.PAUSADO
+                        self.estado = EstadoDoJogo.CONFIG
 
         elif self.estado == EstadoDoJogo.INVENTARIO:
             for ev in eventos:
@@ -602,15 +610,14 @@ class Game:
 
         elif self.estado == EstadoDoJogo.CONFIG:
             for ev in eventos:
-                if ev.type == KEYDOWN:
-                    if ev.key == K_RIGHT:
-                        self.config.proxima_resolucao()
-
-                    elif ev.key == K_RETURN:
-                        self.config.aplicar()
-
-                    elif ev.key == K_ESCAPE:
-                        self.estado = EstadoDoJogo.MENU
+                if ev.type == MOUSEBUTTONDOWN and ev.button == 1:
+                    resultado = self.config.tratar_clique(mouse_pos)
+                    if resultado == "voltar":
+                        self.config.modo_pause = False
+                        self.estado = self.config_origem
+                elif ev.type == KEYDOWN and ev.key == K_ESCAPE:
+                    self.config.modo_pause = False
+                    self.estado = self.config_origem
 
         elif self.estado == EstadoDoJogo.CONTROLES or self.estado == EstadoDoJogo.CREDITOS or self.estado == EstadoDoJogo.VITORIA:
             for ev in eventos:
@@ -686,9 +693,16 @@ class Game:
         self.render_surface.fill((0,0,0))
         offset_x, offset_y = screen_shaker.offset
 
-        if self.estado == EstadoDoJogo.MENU or self.estado == EstadoDoJogo.CONFIG:
+        if self.estado == EstadoDoJogo.MENU or (self.estado == EstadoDoJogo.CONFIG and self.config_origem == EstadoDoJogo.MENU):
             self.menu.run()
             self.menu.desenho(self.screen, mouse_pos, self)
+
+        elif self.estado == EstadoDoJogo.CONFIG and self.config_origem == EstadoDoJogo.PAUSADO:
+            if self.imagem_fundo_pause:
+                self.screen.blit(self.imagem_fundo_pause, (0, 0))
+            overlay = Surface((1920, 1080), SRCALPHA)
+            overlay.fill((0, 0, 0, 180))
+            self.screen.blit(overlay, (0, 0))
 
         elif self.estado == EstadoDoJogo.ESCOLHA_ARMA:
             self.menu_armas.menu_ativo = True
@@ -779,7 +793,7 @@ class Game:
             self.screen.blit(self.imagem_creditos, (0, 0))
 
         if self.estado == EstadoDoJogo.CONFIG:
-            self.config.desenhar()
+            self.config.desenhar(self.screen, mouse_pos)
 
         if self.mensagem_salvo and time.get_ticks() - self.tempo_mensagem_salvo < 2000:
             self.screen.blit(self.mensagem_salvo, (1920 // 2 - self.mensagem_salvo.get_width() // 2, 900))
